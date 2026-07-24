@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Switchboard Documentation Builder v4.5</title>
+<style>
+:root{
+  --primary:#161616;
+  --secondary:#fff4bf;
+  --accent:#ffd400;
+  --dark:#111111;
+  --line:#25313c;
+  --paper:#ffffff;
+  --muted:#eef2f5;
+}
+*{box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#edf1f4;color:#111}
+header{background:linear-gradient(110deg,#111 0%,#2a2a2a 38%,#ffd400 100%);color:#fff;padding:14px 18px}
+header h1{margin:0;font-size:22px}
+header p{margin:4px 0 0;font-size:13px;opacity:.9}
+main{max-width:1500px;margin:auto;padding:14px}
+.panel{background:#fff;border:1px solid #c5ced6;border-radius:10px;padding:13px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,.button,input,select,textarea{font:inherit}
+button,.button{padding:8px 11px;border:1px solid #8d99a6;background:#fff;border-radius:6px;cursor:pointer}
+button.primary{background:var(--primary);color:white;border-color:var(--primary)}
+button.danger{background:#b3261e;color:white;border-color:#b3261e}
+input[type=number]{width:80px;padding:7px}
+input[type=color]{width:48px;height:34px;padding:2px;border:1px solid #999;border-radius:5px}
+input[type=text],select,textarea{width:100%;padding:6px;border:1px solid #aeb7c0;border-radius:4px}
+.meta-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:8px}
+.stage{position:relative;overflow:auto;border:1px solid #89939d;background:#222;min-height:240px}
+canvas{display:block;max-width:none}
+#cropOverlay{position:absolute;border:3px solid #00e676;background:rgba(0,230,118,.08);display:none;pointer-events:none}
+.divider{position:absolute;background:#e53935;z-index:5;touch-action:none}
+.divider.vertical-line{top:0;bottom:0;width:3px;cursor:ew-resize}
+.divider.vertical-line::after{content:"";position:absolute;left:-7px;top:0;width:17px;height:100%}
+.divider.horizontal-line{left:0;right:0;height:3px;cursor:ns-resize}
+.divider.horizontal-line::after{content:"";position:absolute;top:-7px;left:0;height:17px;width:100%}
+.tip{background:#fff8d6;border-left:4px solid #f6c453;padding:8px;margin-top:8px}
+.status{padding:7px;background:#eef6ff;border:1px solid #bbd5ef;border-radius:5px;margin-top:8px}
+.print-only{display:none}
+
+.branding-grid{display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:start}
+.logo-preview{height:115px;border:1px dashed #9aa5af;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;overflow:hidden;padding:4px}
+.logo-preview img{max-width:100%;max-height:100%;object-fit:contain}
+.theme-grid{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:8px}
+
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.photo-box{border:1px solid #b6c0ca;border-radius:8px;padding:8px;background:#fafafa}
+.photo-box img{width:100%;height:230px;object-fit:contain;background:#e3e7ea;border:1px solid #c4cbd1}
+.photo-caption{margin-top:6px}
+
+.report-header{display:grid;grid-template-columns:150px 1fr 260px;gap:12px;align-items:center;border:2px solid var(--primary);border-radius:8px;padding:6px;background:linear-gradient(90deg,var(--secondary),#fff)}
+ .report-logo{height:50px;display:flex;align-items:center;justify-content:center}
+.report-logo img{max-height:48px;max-width:145px;object-fit:contain;background:transparent;border:0;border-radius:0}
+.report-title h2{margin:0;color:var(--primary);font-size:17px}
+.report-title p{margin:5px 0 0;font-size:13px}
+.report-details{font-size:12px;border-left:2px solid var(--primary);padding-left:12px}
+.report-details div{margin:3px 0}
+
+.cover-photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0}
+.cover-card{border:1px solid #444;border-radius:6px;overflow:hidden;background:#fff}
+.cover-card img{width:100%;height:70px;object-fit:contain;background:#e8ecef}
+.cover-card .caption{padding:6px;font-size:11px;font-weight:bold;background:var(--secondary);border-top:1px solid #555}
+
+.section{border:2px solid var(--line);border-radius:8px;margin:12px 0;background:#fff;overflow:hidden}
+.section-head{display:flex;gap:8px;align-items:center;padding:8px;background:var(--secondary);border-bottom:2px solid var(--line)}
+.section-head input{font-weight:bold;max-width:360px;background:rgba(255,255,255,.65)}
+.section-head select{max-width:190px}
+.section-content{padding:6px}
+.section-content.horizontal{display:grid;gap:5px;align-items:stretch;overflow-x:auto}
+.section-content.vertical{display:flex;flex-direction:column;gap:6px}
+.device{border:1.5px solid var(--line);background:#fff;min-width:125px;overflow:hidden}
+.horizontal .device{display:flex;flex-direction:column}
+.vertical .device{display:grid;grid-template-columns:160px minmax(190px,260px) 130px minmax(220px,1fr);align-items:stretch}
+.device-photo{width:100%;height:180px;object-fit:contain;background:#ddd;border-bottom:1px solid var(--line)}
+.vertical .device-photo{height:140px;border-bottom:0;border-right:1px solid var(--line)}
+.fields{padding:5px;display:grid;gap:4px}
+.fields input,.fields select,.fields textarea{font-size:12px}
+.circuit-title{font-weight:bold;text-align:center;background:var(--device-color,var(--accent));border:0;border-top:1px solid var(--line);padding:5px}
+.vertical .circuit-title{border-top:0;border-left:1px solid var(--line);border-right:1px solid var(--line);writing-mode:vertical-rl;transform:rotate(180deg);min-height:140px}
+.loads{min-height:125px;border:0;border-top:1px solid var(--line);border-radius:0;resize:vertical;font-size:12px}
+.vertical .loads{border-top:0;min-height:140px}
+.device-actions{display:flex;gap:4px;padding:4px;border-top:1px solid #ccc;flex-wrap:wrap}
+.vertical .device-actions{grid-column:1/-1}
+.device-actions button{font-size:11px;padding:3px 5px}
+
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;border:1px solid #aaa;border-radius:4px;padding:4px 6px}
+.legend-swatch{width:18px;height:18px;border:1px solid #333}
+
+
+/* Dedicated PDF report layout */
+#printReport{background:#fff;color:#111}
+#printSections{width:100%}
+.print-section{border:1.2px solid var(--line);border-radius:5px;overflow:hidden;margin:4px 0 7px;break-inside:avoid}
+.print-section-title{padding:4px 6px;font-weight:700;font-size:11px;background:var(--secondary);border-bottom:1.2px solid var(--line);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.print-device-grid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));width:100%;gap:0}
+.print-device{min-width:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:#fff;break-inside:avoid}
+.print-device:nth-child(var(--cols)){border-right:0}
+.print-device-photo{width:100%;height:var(--photo-h,86px);display:block;object-fit:contain;background:#e4e6e8;border-bottom:1px solid var(--line)}
+.print-device-fields{padding:2px 3px;font-size:var(--field-size,7.4px);line-height:1.18;min-height:var(--fields-h,35px)}
+.print-device-fields div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:1px 0}
+.print-device-circuit{font-weight:700;text-align:center;padding:3px 2px;font-size:var(--circuit-size,8.4px);background:var(--device-color,var(--accent));border-top:1px solid var(--line);border-bottom:1px solid var(--line);min-height:22px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.print-device-loads{padding:3px;font-size:var(--loads-size,7.4px);line-height:1.18;min-height:var(--loads-h,72px);white-space:pre-wrap;overflow:hidden}
+.report-footer{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #777;margin-top:5px;padding-top:3px;font-size:7px;color:#444}
+#printReport.density-compact{--photo-h:72px;--fields-h:28px;--loads-h:58px;--field-size:6.8px;--loads-size:6.8px;--circuit-size:7.8px}
+#printReport.density-standard{--photo-h:88px;--fields-h:36px;--loads-h:74px;--field-size:7.5px;--loads-size:7.4px;--circuit-size:8.5px}
+#printReport.density-detailed{--photo-h:105px;--fields-h:45px;--loads-h:92px;--field-size:8.2px;--loads-size:8.1px;--circuit-size:9.2px}
+/* Stable print header: percentage-based tracks prevent browser print scaling from crushing columns. */
+#printReport .report-header{width:100%;min-width:0;grid-template-columns:78px minmax(0,31%) minmax(0,1fr);align-items:stretch}
+#printReport .report-header.no-logo{grid-template-columns:minmax(0,31%) minmax(0,1fr)}
+#printReport .report-logo{min-width:0;align-self:center}
+#printReport .report-title{min-width:0;display:flex;flex-direction:column;justify-content:center;padding-right:7px}
+#printReport .report-title h2{overflow-wrap:normal;word-break:normal;hyphens:none;line-height:1.08}
+#printReport .report-title p{line-height:1.15}
+#printReport .report-details{min-width:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:min-content;align-content:center;border-left:1.5px solid var(--primary)}
+#printReport .report-details div{min-width:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:3px;align-items:baseline;white-space:nowrap;overflow:hidden}
+#printReport .report-details b{white-space:nowrap}
+#printReport .report-details span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#printReport .report-details div.is-empty{display:none}
+
+#printReport.header-small .report-header{padding:5px 7px;gap:8px;min-height:52px}
+#printReport.header-small .report-logo{height:42px}
+#printReport.header-small .report-logo img{max-height:40px;max-width:70px}
+#printReport.header-small .report-title h2{font-size:15px;margin:0}
+#printReport.header-small .report-title p{font-size:8.8px;margin:2px 0 0}
+#printReport.header-small .report-details{font-size:7.8px;column-gap:9px;row-gap:3px;padding-left:8px}
+#printReport.header-small .report-details div{margin:0}
+
+#printReport.header-medium .report-header{grid-template-columns:92px minmax(0,32%) minmax(0,1fr);padding:7px 9px;gap:10px;min-height:66px}
+#printReport.header-medium .report-header.no-logo{grid-template-columns:minmax(0,32%) minmax(0,1fr)}
+#printReport.header-medium .report-logo{height:54px}
+#printReport.header-medium .report-logo img{max-height:52px;max-width:88px}
+#printReport.header-medium .report-title h2{font-size:18px;margin:0}
+#printReport.header-medium .report-title p{font-size:10px;margin:2px 0 0}
+#printReport.header-medium .report-details{font-size:8.7px;column-gap:11px;row-gap:4px;padding-left:9px}
+#printReport.header-medium .report-details div{margin:0}
+
+
+.capture-grid{display:grid;grid-template-columns:220px 1fr;gap:10px;align-items:start}
+.capture-list{display:grid;gap:6px}
+.capture-item{display:flex;justify-content:space-between;gap:6px;align-items:center;border:1px solid #bbc5ce;border-radius:6px;padding:7px;background:#f7f9fb;cursor:pointer}
+.capture-item.active{border:2px solid var(--accent);background:#fffbea}
+.capture-item small{display:block;color:#53606b;margin-top:2px}
+.center-divider{position:absolute;top:0;bottom:0;width:4px;background:#1565c0;z-index:7;cursor:ew-resize;touch-action:none}
+.center-divider::after{content:"";position:absolute;left:-8px;top:0;width:20px;height:100%}
+.mode-note{padding:8px;border-radius:5px;background:#f5f8fb;border:1px solid #c4d2df;margin:7px 0}
+
+@media(max-width:850px){
+ .meta-grid,.theme-grid{grid-template-columns:1fr 1fr}
+ .branding-grid,.photo-grid,.cover-photos,.capture-grid{grid-template-columns:1fr}
+ .report-header:not(#printReport .report-header){grid-template-columns:1fr}
+ .vertical .device{grid-template-columns:120px 1fr}
+ .vertical .circuit-title{writing-mode:horizontal-tb;transform:none;grid-column:1/-1;min-height:auto;border:1px solid var(--line)}
+ .vertical .loads{grid-column:1/-1}
+}
+@media print{
+ body{background:#fff;margin:0}
+ header,.no-print,.device-actions,#sections{display:none!important}
+ main{max-width:none;padding:0;margin:0}
+ .panel{border:0;padding:0;margin:0;box-shadow:none}
+ .print-only{display:block!important}
+ #printReport{width:100%;max-width:100%;overflow:visible}
+ .report-header,.cover-photos,.print-section{break-inside:avoid}
+ .report-header{display:grid!important;width:100%!important;max-width:100%!important;min-width:0!important;border:1.2px solid var(--primary);border-radius:5px;background:linear-gradient(90deg,var(--secondary),#fff);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .report-title,.report-details,.report-details div{min-width:0!important}
+ .cover-photos{display:flex;gap:5px;margin:4px 0;max-height:58px}
+ .cover-card{display:grid;grid-template-columns:78px 1fr;flex:1;min-width:0;border-radius:4px}
+ .cover-card img{width:78px;height:54px;object-fit:contain}
+ .cover-card .caption{height:54px;display:flex;align-items:center;padding:3px;font-size:7.4px;border-top:0;border-left:1px solid #555;background:var(--secondary)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .print-device-grid{width:100%!important;max-width:100%!important}
+ .print-device{min-width:0!important;max-width:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+ <h1>Switchboard Documentation Builder v4.5</h1>
+ <p>Professional HTML field-documentation and PDF reporting tool</p>
+</header>
+<main>
+
+<section class="panel no-print">
+ <h3>Report branding and colours</h3>
+ <div class="branding-grid">
+  <div>
+   <div class="logo-preview"><img id="logoPreview" alt="Company logo"></div>
+   <label class="button" style="display:block;text-align:center;margin-top:7px">Add company logo
+    <input id="logoInput" type="file" accept="image/*" hidden>
+   </label>
+  </div>
+  <div>
+   <div class="theme-grid">
+    <label>Company / report title<input id="companyName" type="text" value="N&amp;P Contracting"></label>
+    <label>Report subtitle<input id="reportSubtitle" type="text" value="Electrical Switchboard Documentation — Circuit Schedule and Asset Identification"></label>
+    <label>Primary colour<input id="primaryColor" type="color" value="#161616"></label>
+    <label>Secondary colour<input id="secondaryColor" type="color" value="#fff4bf"></label>
+    <label>Default circuit colour<input id="accentColor" type="color" value="#ffd400"></label>
+    <label>Prepared by<input id="preparedBy" type="text"></label>
+    <label>Licence / contractor no.<input id="licenceNo" type="text"></label>
+    <label>Document reference<input id="documentRef" type="text"></label>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="panel no-print">
+ <div class="controls">
+  <label>Board type
+   <select id="boardType">
+    <option value="horizontal">Horizontal DIN rail board</option>
+    <option value="vertical">Vertical chassis board</option>
+    <option value="mixed">Mixed board (vertical chassis + DIN rail)</option>
+    <option value="custom">Custom board</option>
+   </select>
+  </label>
+  <label>PDF paper<select id="paper"><option>A4</option><option>A3</option></select></label>
+  <label>PDF orientation<select id="orientation"><option value="auto">Automatic</option><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select></label>
+  <label>Photo divider direction
+   <select id="dividerAxis">
+    <option value="auto">Automatic from board type</option>
+    <option value="vertical">Vertical lines — devices left to right</option>
+    <option value="horizontal">Horizontal lines — devices top to bottom</option>
+   </select>
+  </label>
+  <button id="applyBoardType" class="primary">Apply board layout</button>
+ </div>
+</section>
+
+<section class="panel no-print">
+ <h3>PDF output</h3>
+ <div class="theme-grid">
+  <label>Report density
+   <select id="reportDensity">
+    <option value="compact">Compact — largest schedule</option>
+    <option value="standard" selected>Standard</option>
+    <option value="detailed">Detailed — larger text and photos</option>
+   </select>
+  </label>
+  <label>Devices per row
+   <select id="devicesPerRow">
+    <option value="auto" selected>Automatic fit</option>
+    <option value="6">6</option><option value="8">8</option><option value="10">10</option>
+    <option value="12">12</option><option value="14">14</option><option value="16">16</option>
+   </select>
+  </label>
+  <label>Header size
+   <select id="headerSize"><option value="small" selected>Small</option><option value="medium">Medium</option></select>
+  </label>
+  <label style="display:flex;align-items:center;gap:8px;margin-top:22px"><input id="includePhotos" type="checkbox" checked style="width:auto"> Include overview/location photos</label>
+  <label style="display:flex;align-items:center;gap:8px"><input id="includeMake" type="checkbox" checked style="width:auto"> Include make/model</label>
+  <label style="display:flex;align-items:center;gap:8px"><input id="includeType" type="checkbox" checked style="width:auto"> Include device type</label>
+  <label style="display:flex;align-items:center;gap:8px"><input id="includeRating" type="checkbox" checked style="width:auto"> Include rating/curve</label>
+  <label style="display:flex;align-items:center;gap:8px"><input id="includeFooter" type="checkbox" checked style="width:auto"> Include footer</label>
+ </div>
+</section>
+
+<section class="panel no-print">
+ <h3>Board and location photographs</h3>
+ <div class="photo-grid">
+  <div class="photo-box">
+   <img id="boardOverviewPreview" alt="Board overview">
+   <label class="button" style="display:block;text-align:center;margin-top:6px">Add full board / door photo
+    <input id="boardOverviewInput" type="file" accept="image/*" hidden>
+   </label>
+   <input id="boardOverviewCaption" class="photo-caption" type="text" value="Switchboard overview">
+  </div>
+  <div class="photo-box">
+   <img id="locationPreview" alt="Board location">
+   <label class="button" style="display:block;text-align:center;margin-top:6px">Add board location photo
+    <input id="locationPhotoInput" type="file" accept="image/*" hidden>
+   </label>
+   <input id="locationPhotoCaption" class="photo-caption" type="text" value="Board location / surrounding area">
+  </div>
+ </div>
+</section>
+
+<section class="panel no-print">
+ <div class="controls">
+  <label class="button">Choose breaker/device photo<input id="fileInput" type="file" accept="image/*" capture="environment" hidden></label>
+  <button id="rotateL">Rotate left</button><button id="rotateR">Rotate right</button><button id="resetImage">Reset photo</button>
+ </div>
+</section>
+
+<section class="panel no-print">
+ <div class="controls">
+  <button id="selectCrop" class="primary">Draw breaker/device-area crop</button>
+  <button id="useFull">Use full photo</button>
+  <button id="applyCrop">Apply crop</button>
+ </div>
+ <div id="originalStage" class="stage"><canvas id="originalCanvas"></canvas><div id="cropOverlay"></div></div>
+</section>
+
+<section class="panel no-print">
+ <h3>Board capture sections</h3>
+ <div class="capture-grid">
+  <div>
+   <div id="captureList" class="capture-list"></div>
+   <button id="addCapture" class="primary" style="width:100%;margin-top:7px">Add current crop as a section</button>
+  </div>
+  <div>
+   <div class="controls">
+    <label>Section name<input id="captureName" type="text" value="Power chassis"></label>
+    <label>Section layout
+     <select id="captureMode">
+      <option value="paired">Vertical chassis — odd/even columns</option>
+      <option value="din">Horizontal DIN rail — left to right</option>
+      <option value="single">Single device / main isolator</option>
+     </select>
+    </label>
+    <label>Rows / devices <input id="expected" type="number" min="1" max="96" value="9"></label>
+    <label>Edge snap <input id="snap" type="range" min="0" max="40" value="18"></label>
+   </div>
+   <div class="controls" style="margin-top:7px">
+    <button id="updateCapture">Update active section from current crop</button>
+    <button id="deleteCapture" class="danger">Delete active section</button>
+    <button id="detect" class="primary">Place dividers</button>
+    <button id="addDivider">Add divider</button>
+    <button id="clearDividers">Clear dividers</button>
+    <button id="build" class="primary">Build active section into schedule</button>
+   </div>
+   <div class="mode-note" id="dividerStatus">Choose a section layout. Chassis mode uses horizontal row lines plus a movable blue centre line for odd and even breakers.</div>
+   <div id="cropStage" class="stage"><canvas id="cropCanvas"></canvas></div>
+  </div>
+ </div>
+</section>
+
+<section class="panel no-print">
+ <div class="meta-grid">
+  <label>Site / client<input id="site" type="text"></label>
+  <label>Board designation<input id="board" type="text" placeholder="DB-1 / MCC-1"></label>
+  <label>Location<input id="location" type="text"></label>
+  <label>Date<input id="date" type="text"></label>
+ </div>
+</section>
+
+<section id="printReport" class="print-only">
+ <div class="report-header" id="printHeader">
+  <div class="report-logo"><img id="printLogo" alt=""></div>
+  <div class="report-title">
+   <h2 id="printCompany">Electrical Switchboard Documentation</h2>
+   <p id="printSubtitle">Circuit Schedule and Asset Identification</p>
+  </div>
+  <div class="report-details">
+   <div><b>Site:</b> <span id="printSite"></span></div>
+   <div><b>Board:</b> <span id="printBoard"></span></div>
+   <div><b>Location:</b> <span id="printLocation"></span></div>
+   <div><b>Date:</b> <span id="printDate"></span></div>
+   <div><b>Prepared:</b> <span id="printPreparedBy"></span></div>
+   <div><b>Licence:</b> <span id="printLicence"></span></div>
+   <div><b>Ref:</b> <span id="printRef"></span></div>
+  </div>
+ </div>
+ <div class="cover-photos" id="printCoverPhotos">
+  <div class="cover-card" id="printBoardPhotoCard"><img id="printBoardPhoto"><div class="caption" id="printBoardCaption"></div></div>
+  <div class="cover-card" id="printLocationPhotoCard"><img id="printLocationPhoto"><div class="caption" id="printLocationCaption"></div></div>
+ </div>
+ <div id="printSections"></div>
+ <footer id="printFooter" class="report-footer"><span id="footerLeft"></span><span>Switchboard Documentation Builder v4.5</span></footer>
+</section>
+
+<section class="panel">
+ <div class="controls no-print">
+  <button id="addSection">Add section</button>
+  <button id="saveProject">Save project</button>
+  <label class="button">Load project<input id="loadProject" type="file" accept=".json" hidden></label>
+  <button id="printPdf" class="primary">Print / Save as PDF</button>
+ </div>
+ <div class="tip no-print"><b>Colour coding:</b> every device has its own colour picker. Use colours for power, lighting, mechanical, fire, controls, essential services, UPS, emergency or any scheme you prefer.</div>
+ <div id="sections"></div>
+</section>
+</main>
+
+<script>
+const originalCanvas=document.getElementById('originalCanvas'),octx=originalCanvas.getContext('2d',{willReadFrequently:true});
+const cropCanvas=document.getElementById('cropCanvas'),cctx=cropCanvas.getContext('2d',{willReadFrequently:true});
+const originalStage=document.getElementById('originalStage'),cropStage=document.getElementById('cropStage'),cropOverlay=document.getElementById('cropOverlay');
+const sectionsEl=document.getElementById('sections');
+let sourceImage=null,rotation=0,imageDataURL='',cropRect=null,dividerXs=[],dragIndex=-1,selecting=false,startPt=null;
+let captureRegions=[],activeCaptureId=null,centerSplitX=null,draggingCenter=false;
+function activeCapture(){return captureRegions.find(c=>c.id===activeCaptureId)||null}
+function effectiveDividerAxis(){return captureMode.value==='din'?'vertical':'horizontal'}
+function updateDividerGuidance(){const m=captureMode.value;dividerStatus.textContent=m==='paired'?'Vertical chassis: red horizontal lines separate each row. The blue vertical centre line separates odd breakers on the left from even breakers on the right. Drag either line to adjust it.':m==='din'?'DIN rail: red vertical lines separate devices from left to right.':'Single-device mode: no divider lines are required.'}
+
+const DEFAULT_LOGO='';
+let logoData=DEFAULT_LOGO,boardOverviewData='',locationPhotoData='';
+const breakerTypes=['MCB','RCBO','RCD','Main Switch / Isolator','Contactor','Timer','SPD','Meter','VSD','Thermal Overload','MPCB / Motor Protector','Relay','Power Supply','PLC / Controller','Other'];
+
+function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
+function typeOptions(selected=''){return breakerTypes.map(t=>`<option ${t===selected?'selected':''}>${t}</option>`).join('')}
+function readImage(input,cb){
+ const f=input.files[0]; if(!f)return;
+ const r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsDataURL(f);
+}
+document.getElementById('logoInput').onchange=e=>readImage(e.target,data=>{logoData=data;logoPreview.src=data;printLogo.src=data});
+document.getElementById('boardOverviewInput').onchange=e=>readImage(e.target,data=>{boardOverviewData=data;boardOverviewPreview.src=data});
+document.getElementById('locationPhotoInput').onchange=e=>readImage(e.target,data=>{locationPhotoData=data;locationPreview.src=data});
+
+function applyTheme(){
+ const p=primaryColor.value,s=secondaryColor.value,a=accentColor.value;
+ document.documentElement.style.setProperty('--primary',p);
+ document.documentElement.style.setProperty('--secondary',s);
+ document.documentElement.style.setProperty('--accent',a);
+}
+primaryColor.oninput=secondaryColor.oninput=accentColor.oninput=applyTheme;
+
+function createSection(data={}){
+ const section=document.createElement('section');section.className='section';
+ const direction=data.direction||'horizontal', sectionColor=data.color||secondaryColor.value;
+ section.style.setProperty('--section-color',sectionColor);
+ section.innerHTML=`
+  <div class="section-head" style="background:${sectionColor}">
+   <input class="section-title" value="${esc(data.title||'Board section')}" aria-label="Section title">
+   <input class="section-color no-print" type="color" value="${sectionColor}" title="Section colour">
+   <select class="section-direction no-print">
+    <option value="horizontal" ${direction==='horizontal'?'selected':''}>Horizontal row</option>
+    <option value="vertical" ${direction==='vertical'?'selected':''}>Vertical chassis</option>
+   </select>
+   <button class="add-device no-print">Add device</button>
+   <button class="delete-section danger no-print">Delete section</button>
+  </div>
+  <div class="section-content ${direction}"></div>`;
+ const content=section.querySelector('.section-content');
+ section.querySelector('.section-direction').onchange=e=>{content.className='section-content '+e.target.value;updateSectionSizing(section)};
+ section.querySelector('.section-color').oninput=e=>section.querySelector('.section-head').style.background=e.target.value;
+ section.querySelector('.add-device').onclick=()=>addDevice(content,{});
+ section.querySelector('.delete-section').onclick=()=>section.remove();
+ sectionsEl.appendChild(section);
+ (data.devices||[]).forEach(d=>addDevice(content,d));
+ updateSectionSizing(section);
+ return section;
+}
+function addDevice(content,data={}){
+ const colour=data.color||accentColor.value;
+ const d=document.createElement('article');d.className='device';d.style.setProperty('--device-color',colour);
+ d.innerHTML=`
+  <img class="device-photo" src="${data.crop||''}" alt="">
+  <div class="fields">
+   <select class="type">${typeOptions(data.type||'Other')}</select>
+   <input class="rating" type="text" placeholder="Rating / curve" value="${esc(data.rating)}">
+   <input class="make" type="text" placeholder="Make / model" value="${esc(data.make)}">
+   <input class="device-color no-print" type="color" value="${colour}" title="Circuit colour">
+  </div>
+  <input class="circuit-title" type="text" placeholder="Circuit / asset ID" value="${esc(data.circuit)}">
+  <textarea class="loads" placeholder="Circuit duty, supplied equipment, notes">${esc(data.loads)}</textarea>
+  <div class="device-actions no-print">
+   <button class="merge">Merge with next</button>
+   <button class="up">← / ↑</button><button class="down">→ / ↓</button><button class="remove">Remove</button>
+  </div>`;
+ d.querySelector('.device-color').oninput=e=>d.style.setProperty('--device-color',e.target.value);
+ d.querySelector('.remove').onclick=()=>{d.remove();updateSectionSizing(content.closest('.section'))};
+ d.querySelector('.up').onclick=()=>d.previousElementSibling&&content.insertBefore(d,d.previousElementSibling);
+ d.querySelector('.down').onclick=()=>d.nextElementSibling&&content.insertBefore(d.nextElementSibling,d);
+ d.querySelector('.merge').onclick=()=>mergeNext(d);
+ content.appendChild(d);updateSectionSizing(content.closest('.section'));
+}
+function updateSectionSizing(section){
+ if(!section)return;const content=section.querySelector('.section-content');
+ if(content.classList.contains('horizontal'))content.style.gridTemplateColumns=`repeat(${Math.max(1,content.children.length)},minmax(120px,1fr))`;
+ else content.style.gridTemplateColumns='';
+}
+function mergeNext(d){
+ const n=d.nextElementSibling;if(!n)return;
+ const a=d.querySelector('.device-photo'),b=n.querySelector('.device-photo'),ia=new Image(),ib=new Image();
+ ia.onload=()=>{ib.onload=()=>{const c=document.createElement('canvas');c.height=Math.max(ia.height,ib.height);c.width=ia.width+ib.width;
+  const x=c.getContext('2d');x.fillStyle='#ddd';x.fillRect(0,0,c.width,c.height);x.drawImage(ia,0,0);x.drawImage(ib,ia.width,0);
+  a.src=c.toDataURL('image/jpeg',.92);n.remove();updateSectionSizing(d.closest('.section'));
+ };ib.src=b.src};ia.src=a.src;
+}
+
+applyBoardType.onclick=()=>{
+ const type=boardType.value;sectionsEl.innerHTML='';
+ if(type==='horizontal')renderCaptureList();
+updateDividerGuidance();
+ if(type==='vertical')createSection({title:'Vertical chassis',direction:'vertical'});
+ if(type==='mixed'){createSection({title:'Main chassis',direction:'vertical'});createSection({title:'DIN rail section',direction:'horizontal'})}
+ if(type==='custom')createSection({title:'Custom board section',direction:effectiveDividerAxis()==='horizontal'?'vertical':'horizontal'});
+ dividerXs=[];renderDividers();updateDividerGuidance();
+};
+addSection.onclick=()=>createSection({title:'New section',direction:(boardType.value==='vertical'||effectiveDividerAxis()==='horizontal')?'vertical':'horizontal'});
+boardType.onchange=()=>{}; dividerAxis.onchange=()=>{};
+
+fileInput.onchange=e=>e.target.files[0]&&loadFile(e.target.files[0]);
+function loadFile(file){const r=new FileReader();r.onload=e=>{imageDataURL=e.target.result;const img=new Image();img.onload=()=>{sourceImage=img;rotation=0;drawOriginal();useFullCrop()};img.src=imageDataURL};r.readAsDataURL(file)}
+function drawOriginal(){
+ if(!sourceImage)return;
+ const rotated=rotation%180!==0,maxW=1350,nw=rotated?sourceImage.height:sourceImage.width,nh=rotated?sourceImage.width:sourceImage.height,scale=Math.min(1,maxW/nw);
+ originalCanvas.width=Math.round(nw*scale);originalCanvas.height=Math.round(nh*scale);
+ octx.save();octx.clearRect(0,0,originalCanvas.width,originalCanvas.height);octx.translate(originalCanvas.width/2,originalCanvas.height/2);octx.rotate(rotation*Math.PI/180);
+ octx.drawImage(sourceImage,-sourceImage.width*scale/2,-sourceImage.height*scale/2,sourceImage.width*scale,sourceImage.height*scale);octx.restore();
+ cropRect=null;cropOverlay.style.display='none';
+}
+rotateL.onclick=()=>{rotation=(rotation+270)%360;drawOriginal();useFullCrop()};
+rotateR.onclick=()=>{rotation=(rotation+90)%360;drawOriginal();useFullCrop()};
+resetImage.onclick=()=>{rotation=0;drawOriginal();useFullCrop()};
+function pointOnOriginal(e){const r=originalCanvas.getBoundingClientRect();return{x:Math.max(0,Math.min(originalCanvas.width,e.clientX-r.left)),y:Math.max(0,Math.min(originalCanvas.height,e.clientY-r.top))}}
+selectCrop.onclick=()=>{if(!sourceImage)return alert('Choose a photo first.');selecting=true;originalCanvas.style.cursor='crosshair'};
+originalCanvas.onpointerdown=e=>{if(!selecting)return;startPt=pointOnOriginal(e);originalCanvas.setPointerCapture(e.pointerId);cropOverlay.style.display='block'};
+originalCanvas.onpointermove=e=>{if(!selecting||!startPt)return;const p=pointOnOriginal(e),x=Math.min(p.x,startPt.x),y=Math.min(p.y,startPt.y),w=Math.abs(p.x-startPt.x),h=Math.abs(p.y-startPt.y);
+ cropRect={x,y,w,h};cropOverlay.style.left=(originalCanvas.offsetLeft+x)+'px';cropOverlay.style.top=(originalCanvas.offsetTop+y)+'px';cropOverlay.style.width=w+'px';cropOverlay.style.height=h+'px'};
+originalCanvas.onpointerup=()=>{selecting=false;startPt=null;originalCanvas.style.cursor='default'};
+function useFullCrop(){if(!sourceImage)return;cropRect={x:0,y:0,w:originalCanvas.width,h:originalCanvas.height};showOverlay();applyCrop()}
+function showOverlay(){if(!cropRect)return;cropOverlay.style.display='block';cropOverlay.style.left=(originalCanvas.offsetLeft+cropRect.x)+'px';cropOverlay.style.top=(originalCanvas.offsetTop+cropRect.y)+'px';cropOverlay.style.width=cropRect.w+'px';cropOverlay.style.height=cropRect.h+'px'}
+useFull.onclick=useFullCrop;document.getElementById('applyCrop').onclick=applySelectedCrop;
+function applySelectedCrop(){
+ if(!cropRect||cropRect.w<10||cropRect.h<10)return alert('Draw a crop first.');
+ cropCanvas.width=Math.round(cropRect.w);cropCanvas.height=Math.round(cropRect.h);cctx.clearRect(0,0,cropCanvas.width,cropCanvas.height);
+ cctx.drawImage(originalCanvas,cropRect.x,cropRect.y,cropRect.w,cropRect.h,0,0,cropCanvas.width,cropCanvas.height);dividerXs=[];renderDividers();
+}
+function edgeScores(axis){
+ const w=cropCanvas.width,h=cropCanvas.height,data=cctx.getImageData(0,0,w,h).data;
+ if(axis==='vertical'){
+  const score=new Float64Array(w),y0=Math.floor(h*.10),y1=Math.floor(h*.92);
+  for(let x=1;x<w-1;x+=1){let s=0;for(let y=y0;y<y1;y+=2){const i=(y*w+x)*4,il=i-4,ir=i+4;s+=Math.abs(data[ir]-data[il])+Math.abs(data[ir+1]-data[il+1])+Math.abs(data[ir+2]-data[il+2])}score[x]=s}return score;
+ }
+ const score=new Float64Array(h),x0=Math.floor(w*.08),x1=Math.floor(w*.94);
+ for(let y=1;y<h-1;y+=1){let s=0;for(let x=x0;x<x1;x+=2){const i=(y*w+x)*4,iu=i-w*4,id=i+w*4;s+=Math.abs(data[id]-data[iu])+Math.abs(data[id+1]-data[iu+1])+Math.abs(data[id+2]-data[iu+2])}score[y]=s}return score;
+}
+detect.onclick=()=>{
+ if(!cropCanvas.width)return alert('Apply a crop first.');
+ const count=Math.max(1,parseInt(expected.value)||1),snapv=parseInt(snap.value)||0,axis=effectiveDividerAxis(),scores=edgeScores(axis),length=axis==='vertical'?cropCanvas.width:cropCanvas.height,spacing=length/count;if(captureMode.value==='single'){dividerXs=[];renderDividers();return;}
+ dividerXs=[];for(let i=1;i<count;i++){const ideal=i*spacing,r=Math.min(snapv,Math.floor(spacing*.42));let best=ideal,bestScore=-1;
+  for(let p=Math.max(2,Math.round(ideal-r));p<=Math.min(length-2,Math.round(ideal+r));p++){if(scores[p]>bestScore){bestScore=scores[p];best=p}}dividerXs.push(best)}renderDividers();saveActiveCaptureState();
+};
+addDivider.onclick=()=>{if(cropCanvas.width&&captureMode.value!=='single'){const axis=effectiveDividerAxis();dividerXs.push((axis==='vertical'?cropCanvas.width:cropCanvas.height)/2);renderDividers();saveActiveCaptureState()}};
+clearDividers.onclick=()=>{dividerXs=[];renderDividers();saveActiveCaptureState()};
+cropStage.onclick=e=>{if(e.target!==cropCanvas||!e.shiftKey)return;const r=cropCanvas.getBoundingClientRect(),axis=effectiveDividerAxis();dividerXs.push(axis==='vertical'?e.clientX-r.left:e.clientY-r.top);renderDividers()};
+function renderDividers(){
+ cropStage.querySelectorAll('.divider,.center-divider').forEach(d=>d.remove());
+ const axis=effectiveDividerAxis(),length=axis==='vertical'?cropCanvas.width:cropCanvas.height;
+ dividerXs=dividerXs.filter(v=>v>0&&v<length).sort((a,b)=>a-b);
+ dividerXs.forEach((pos,i)=>{const d=document.createElement('div');d.className='divider '+(axis==='vertical'?'vertical-line':'horizontal-line');
+  if(axis==='vertical')d.style.left=(cropCanvas.offsetLeft+pos-1)+'px';else d.style.top=(cropCanvas.offsetTop+pos-1)+'px';
+  d.onpointerdown=e=>{e.preventDefault();dragIndex=i;d.setPointerCapture(e.pointerId)};
+  d.onpointermove=e=>{if(dragIndex<0)return;const r=cropCanvas.getBoundingClientRect(),limit=axis==='vertical'?cropCanvas.width:cropCanvas.height,raw=axis==='vertical'?e.clientX-r.left:e.clientY-r.top;dividerXs[dragIndex]=Math.max(1,Math.min(limit-1,raw));if(axis==='vertical')d.style.left=(cropCanvas.offsetLeft+dividerXs[dragIndex]-1)+'px';else d.style.top=(cropCanvas.offsetTop+dividerXs[dragIndex]-1)+'px'};
+  d.onpointerup=()=>{dragIndex=-1;dividerXs.sort((a,b)=>a-b);saveActiveCaptureState();renderDividers()};d.onpointercancel=d.onpointerup;
+  d.ondblclick=()=>{dividerXs.splice(i,1);saveActiveCaptureState();renderDividers()};cropStage.appendChild(d)});
+ if(captureMode.value==='paired'&&cropCanvas.width){
+  if(centerSplitX==null)centerSplitX=cropCanvas.width/2;
+  const c=document.createElement('div');c.className='center-divider';c.style.left=(cropCanvas.offsetLeft+centerSplitX-2)+'px';
+  c.onpointerdown=e=>{e.preventDefault();draggingCenter=true;c.setPointerCapture(e.pointerId)};
+  c.onpointermove=e=>{if(!draggingCenter)return;const r=cropCanvas.getBoundingClientRect();centerSplitX=Math.max(10,Math.min(cropCanvas.width-10,e.clientX-r.left));c.style.left=(cropCanvas.offsetLeft+centerSplitX-2)+'px'};
+  c.onpointerup=()=>{draggingCenter=false;saveActiveCaptureState()};c.onpointercancel=c.onpointerup;cropStage.appendChild(c);
+ }
+ updateDividerGuidance();
+}
+function cropURL(p0,p1,axis){const c=document.createElement('canvas'),ctx=c.getContext('2d');
+ if(axis==='vertical'){c.width=Math.max(1,Math.round(p1-p0));c.height=cropCanvas.height;ctx.drawImage(cropCanvas,p0,0,p1-p0,cropCanvas.height,0,0,c.width,c.height)}
+ else{c.width=cropCanvas.width;c.height=Math.max(1,Math.round(p1-p0));ctx.drawImage(cropCanvas,0,p0,cropCanvas.width,p1-p0,0,0,c.width,c.height)}
+ return c.toDataURL('image/jpeg',.92)}
+build.onclick=()=>{
+ if(!cropCanvas.width)return alert('Select or add a capture section first.');
+ const cap=activeCapture();if(!cap)return alert('Add the current crop as a section first.');
+ saveActiveCaptureState();
+ let section=[...sectionsEl.querySelectorAll('.section')].find(s=>s.dataset.captureId===cap.id);
+ const direction=cap.mode==='paired'?'vertical':'horizontal';
+ if(!section){section=createSection({title:cap.name,direction});section.dataset.captureId=cap.id}else{section.querySelector('.section-title').value=cap.name}
+ const content=section.querySelector('.section-content');content.className='section-content '+direction;section.querySelector('.section-direction').value=direction;content.innerHTML='';
+ let devices=[];
+ if(cap.mode==='single')devices=[{crop:cropCanvas.toDataURL('image/jpeg',.92),circuit:'MAIN'}];
+ else if(cap.mode==='din'){
+  const b=[0,...dividerXs.sort((a,b)=>a-b),cropCanvas.width];
+  for(let i=0;i<b.length-1;i++)if(b[i+1]-b[i]>5)devices.push({crop:cropURL(b[i],b[i+1],'vertical'),circuit:String(i+1)});
+ }else{
+  const rows=[0,...dividerXs.sort((a,b)=>a-b),cropCanvas.height],cx=Math.max(10,Math.min(cropCanvas.width-10,centerSplitX||cropCanvas.width/2));
+  for(let r=0;r<rows.length-1;r++)if(rows[r+1]-rows[r]>5){
+   const left=document.createElement('canvas'),lc=left.getContext('2d');left.width=Math.round(cx);left.height=Math.round(rows[r+1]-rows[r]);lc.drawImage(cropCanvas,0,rows[r],cx,rows[r+1]-rows[r],0,0,left.width,left.height);
+   const right=document.createElement('canvas'),rc=right.getContext('2d');right.width=Math.round(cropCanvas.width-cx);right.height=Math.round(rows[r+1]-rows[r]);rc.drawImage(cropCanvas,cx,rows[r],cropCanvas.width-cx,rows[r+1]-rows[r],0,0,right.width,right.height);
+   devices.push({crop:left.toDataURL('image/jpeg',.92),circuit:String(r*2+1)});devices.push({crop:right.toDataURL('image/jpeg',.92),circuit:String(r*2+2)});
+  }
+ }
+ devices.forEach(d=>addDevice(content,{...d,color:accentColor.value}));updateSectionSizing(section);
+};
+
+function makeCaptureId(){return 'cap-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)}
+function saveActiveCaptureState(){const c=activeCapture();if(!c)return;c.name=captureName.value.trim()||'Section';c.mode=captureMode.value;c.dividers=[...dividerXs];c.centerSplitX=centerSplitX;c.expected=parseInt(expected.value)||1;if(cropRect)c.cropRect={...cropRect};renderCaptureList()}
+function renderCaptureList(){captureList.innerHTML='';captureRegions.forEach(c=>{const el=document.createElement('div');el.className='capture-item'+(c.id===activeCaptureId?' active':'');el.innerHTML=`<div><b>${esc(c.name)}</b><small>${c.mode==='paired'?'Vertical chassis — odd/even':c.mode==='din'?'DIN rail':'Single device'}</small></div><span>›</span>`;el.onclick=()=>selectCapture(c.id);captureList.appendChild(el)})}
+function selectCapture(id){saveActiveCaptureState();const c=captureRegions.find(x=>x.id===id);if(!c)return;activeCaptureId=id;captureName.value=c.name;captureMode.value=c.mode;expected.value=c.expected||1;cropRect={...c.cropRect};showOverlay();applySelectedCrop();dividerXs=[...(c.dividers||[])];centerSplitX=c.centerSplitX??cropCanvas.width/2;renderDividers();renderCaptureList()}
+addCapture.onclick=()=>{if(!cropRect||cropRect.w<10||cropRect.h<10)return alert('Draw a crop around this board section first.');const c={id:makeCaptureId(),name:captureName.value.trim()||`Section ${captureRegions.length+1}`,mode:captureMode.value,cropRect:{...cropRect},dividers:[],centerSplitX:null,expected:parseInt(expected.value)||1};captureRegions.push(c);activeCaptureId=c.id;applySelectedCrop();centerSplitX=cropCanvas.width/2;dividerXs=[];renderDividers();renderCaptureList()};
+updateCapture.onclick=()=>{const c=activeCapture();if(!c)return alert('Select a capture section first.');if(cropRect)c.cropRect={...cropRect};c.name=captureName.value.trim()||c.name;c.mode=captureMode.value;c.expected=parseInt(expected.value)||c.expected;applySelectedCrop();c.dividers=[];dividerXs=[];centerSplitX=cropCanvas.width/2;c.centerSplitX=centerSplitX;renderDividers();renderCaptureList()};
+deleteCapture.onclick=()=>{const c=activeCapture();if(!c)return;captureRegions=captureRegions.filter(x=>x.id!==c.id);sectionsEl.querySelector(`[data-capture-id="${c.id}"]`)?.remove();activeCaptureId=captureRegions[0]?.id||null;if(activeCaptureId)selectCapture(activeCaptureId);else{dividerXs=[];centerSplitX=null;renderDividers();renderCaptureList()}};
+captureMode.onchange=()=>{dividerXs=[];centerSplitX=cropCanvas.width/2;saveActiveCaptureState();renderDividers()};captureName.oninput=saveActiveCaptureState;
+function projectData(){
+ saveActiveCaptureState();return {version:4.5,imageDataURL,rotation,cropRect,dividerXs,captureRegions,activeCaptureId,logoData,boardOverviewData,locationPhotoData,
+ boardType:boardType.value,dividerAxis:dividerAxis.value,paper:paper.value,orientation:orientation.value,output:{density:reportDensity.value,devicesPerRow:devicesPerRow.value,headerSize:headerSize.value,includePhotos:includePhotos.checked,includeMake:includeMake.checked,includeType:includeType.checked,includeRating:includeRating.checked,includeFooter:includeFooter.checked},
+ theme:{primary:primaryColor.value,secondary:secondaryColor.value,accent:accentColor.value},
+ branding:{companyName:companyName.value,reportSubtitle:reportSubtitle.value,preparedBy:preparedBy.value,licenceNo:licenceNo.value,documentRef:documentRef.value,
+ boardOverviewCaption:boardOverviewCaption.value,locationPhotoCaption:locationPhotoCaption.value},
+ meta:{site:site.value,board:board.value,location:location.value,date:date.value},
+ sections:[...document.querySelectorAll('.section')].map(s=>({title:s.querySelector('.section-title').value,color:s.querySelector('.section-color').value,direction:s.querySelector('.section-content').classList.contains('vertical')?'vertical':'horizontal',
+ devices:[...s.querySelectorAll('.device')].map(d=>({crop:d.querySelector('.device-photo').src,type:d.querySelector('.type').value,rating:d.querySelector('.rating').value,make:d.querySelector('.make').value,circuit:d.querySelector('.circuit-title').value,loads:d.querySelector('.loads').value,color:d.querySelector('.device-color').value}))}))};
+}
+saveProject.onclick=()=>{const blob=new Blob([JSON.stringify(projectData())],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='switchboard-project-v4-5.json';a.click();URL.revokeObjectURL(a.href)};
+loadProject.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const p=JSON.parse(r.result);
+ imageDataURL=p.imageDataURL||'';rotation=p.rotation||0;cropRect=p.cropRect||null;dividerXs=p.dividerXs||[];captureRegions=p.captureRegions||[];activeCaptureId=p.activeCaptureId||captureRegions[0]?.id||null;logoData=p.logoData||DEFAULT_LOGO;boardOverviewData=p.boardOverviewData||'';locationPhotoData=p.locationPhotoData||'';
+ boardType.value=p.boardType||'horizontal';dividerAxis.value=p.dividerAxis||'auto';paper.value=p.paper||'A4';orientation.value=p.orientation||'auto';updateDividerGuidance();
+ if(p.output){reportDensity.value=p.output.density||'standard';devicesPerRow.value=p.output.devicesPerRow||'auto';headerSize.value=p.output.headerSize||'small';includePhotos.checked=p.output.includePhotos!==false;includeMake.checked=p.output.includeMake!==false;includeType.checked=p.output.includeType!==false;includeRating.checked=p.output.includeRating!==false;includeFooter.checked=p.output.includeFooter!==false}
+ if(p.theme){primaryColor.value=p.theme.primary;secondaryColor.value=p.theme.secondary;accentColor.value=p.theme.accent;applyTheme()}
+ Object.entries(p.branding||{}).forEach(([k,v])=>{if(document.getElementById(k))document.getElementById(k).value=v||''});
+ Object.entries(p.meta||{}).forEach(([k,v])=>document.getElementById(k).value=v||'');
+ if(logoData){logoPreview.src=logoData;printLogo.src=logoData}if(boardOverviewData)boardOverviewPreview.src=boardOverviewData;if(locationPhotoData)locationPreview.src=locationPhotoData;
+ sectionsEl.innerHTML='';(p.sections||[]).forEach(createSection);
+ if(imageDataURL){const img=new Image();img.onload=()=>{sourceImage=img;drawOriginal();if(activeCaptureId)selectCapture(activeCaptureId);else{cropRect=p.cropRect;showOverlay();applySelectedCrop();dividerXs=p.dividerXs||[];renderDividers()}renderCaptureList()};img.src=imageDataURL}else renderCaptureList()
+ };r.readAsText(f)};
+
+
+function autoColumns(deviceCount,paperSize,orient,density){
+ const landscape=orient==='landscape';
+ let max=paperSize==='A3'?(landscape?16:11):(landscape?12:8);
+ if(density==='compact')max+=2;
+ if(density==='detailed')max-=2;
+ return Math.max(4,Math.min(max,deviceCount||1));
+}
+function buildPrintReport(p,orient){
+ const report=document.getElementById('printReport');
+ report.className=`print-only density-${p.output.density} header-${p.output.headerSize}`;
+ const target=document.getElementById('printSections');target.innerHTML='';
+ for(const section of p.sections){
+  const count=section.devices.length;
+  if(!count)continue;
+  const forced=parseInt(p.output.devicesPerRow,10);
+  const cols=Number.isFinite(forced)?Math.max(1,Math.min(forced,count)):autoColumns(count,p.paper,orient,p.output.density);
+  for(let start=0;start<count;start+=cols){
+   const chunk=section.devices.slice(start,start+cols);
+   const wrap=document.createElement('section');wrap.className='print-section';
+   const suffix=count>cols?` — ${start+1}–${start+chunk.length}`:'';
+   wrap.innerHTML=`<div class="print-section-title" style="background:${esc(section.color||p.theme.secondary)}">${esc(section.title)}${suffix}</div><div class="print-device-grid" style="--cols:${cols}"></div>`;
+   const grid=wrap.querySelector('.print-device-grid');
+   chunk.forEach(d=>{
+    const card=document.createElement('article');card.className='print-device';
+    const fields=[];
+    if(p.output.includeType&&d.type)fields.push(`<div><b>Type:</b> ${esc(d.type)}</div>`);
+    if(p.output.includeRating&&d.rating)fields.push(`<div><b>Rating:</b> ${esc(d.rating)}</div>`);
+    if(p.output.includeMake&&d.make)fields.push(`<div><b>Make:</b> ${esc(d.make)}</div>`);
+    card.innerHTML=`<img class="print-device-photo" src="${d.crop||''}" alt=""><div class="print-device-fields">${fields.join('')}</div><div class="print-device-circuit" style="--device-color:${esc(d.color||p.theme.accent)}">${esc(d.circuit||'')}</div><div class="print-device-loads">${esc(d.loads||'')}</div>`;
+    grid.appendChild(card);
+   });
+   target.appendChild(wrap);
+  }
+ }
+ document.getElementById('printFooter').style.display=p.output.includeFooter?'flex':'none';
+ document.getElementById('footerLeft').textContent=[p.branding.preparedBy,p.meta.date].filter(Boolean).join(' • ');
+}
+printPdf.onclick=()=>{
+ const p=projectData(),firstDirection=p.sections[0]?.direction||'horizontal',auto=(p.boardType==='vertical'||(p.boardType==='custom'&&firstDirection==='vertical'))?'portrait':'landscape',orient=p.orientation==='auto'?auto:p.orientation;
+ let style=document.getElementById('dynamicPrintStyle');if(style)style.remove();style=document.createElement('style');style.id='dynamicPrintStyle';
+ style.textContent=`@media print{@page{size:${p.paper} ${orient};margin:5mm}}`;document.head.appendChild(style);
+ printCompany.textContent=p.branding.companyName||'N&P Contracting';printSubtitle.textContent=p.branding.reportSubtitle||'';
+ printSite.textContent=p.meta.site;printBoard.textContent=p.meta.board;printLocation.textContent=p.meta.location;printDate.textContent=p.meta.date;
+ printPreparedBy.textContent=p.branding.preparedBy;printLicence.textContent=p.branding.licenceNo;printRef.textContent=p.branding.documentRef;
+ printLogo.src=p.logoData||'';
+ const headerEl=document.getElementById('printHeader');
+ printLogo.parentElement.style.display=p.logoData?'flex':'none';
+ headerEl.classList.toggle('no-logo',!p.logoData);
+ document.querySelectorAll('#printHeader .report-details > div').forEach(row=>{
+  const value=(row.querySelector('span')?.textContent||'').trim();
+  row.classList.toggle('is-empty',!value);
+ });
+ printBoardPhoto.src=p.boardOverviewData||'';printLocationPhoto.src=p.locationPhotoData||'';
+ printBoardCaption.textContent=p.branding.boardOverviewCaption||'';printLocationCaption.textContent=p.branding.locationPhotoCaption||'';
+ printBoardPhotoCard.style.display=p.boardOverviewData?'grid':'none';printLocationPhotoCard.style.display=p.locationPhotoData?'grid':'none';
+ printCoverPhotos.style.display=(p.output.includePhotos&&(p.boardOverviewData||p.locationPhotoData))?'flex':'none';
+ buildPrintReport(p,orient);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+};
+
+date.value=new Date().toLocaleDateString('en-AU');
+logoPreview.src=logoData;
+printLogo.src=logoData;
+applyTheme();
+renderCaptureList();
+</script>
+</body>
+</html>
