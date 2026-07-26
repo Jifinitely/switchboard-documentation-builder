@@ -1,0 +1,10 @@
+{
+  "name": "Switchboard Documentation Builder",
+  "short_name": "Switchboard Builder",
+  "description": "Offline-capable electrical switchboard field documentation and PDF reporting.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#edf1f4",
+  "theme_color": "#161616"
+}

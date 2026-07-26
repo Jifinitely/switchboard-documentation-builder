@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Switchboard Documentation Builder v4.5</title>
+<title>Switchboard Documentation Builder v5.1</title>
+<meta name="theme-color" content="#161616">
+<meta name="description" content="Offline-capable field documentation and PDF reporting for electrical switchboards.">
+<meta property="og:title" content="Switchboard Documentation Builder v5.1">
+<meta property="og:description" content="Capture. Schedule. Validate. Issue.">
+<meta property="og:image" content="https://jifinitely.github.io/switchboard-documentation-builder/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{
   --primary:#161616;
@@ -41,6 +48,59 @@ canvas{display:block;max-width:none}
 .tip{background:#fff8d6;border-left:4px solid #f6c453;padding:8px;margin-top:8px}
 .status{padding:7px;background:#eef6ff;border:1px solid #bbd5ef;border-radius:5px;margin-top:8px}
 .print-only{display:none}
+.command-bar{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid #c5ced6;box-shadow:0 3px 12px rgba(0,0,0,.12);padding:9px 14px}
+.command-inner{max-width:1500px;margin:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.save-pill{margin-left:auto;display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#eef8f0;border:1px solid #b7d9bd;font-size:12px}
+.save-dot{width:8px;height:8px;border-radius:50%;background:#1c8b39}
+.save-pill.saving .save-dot{background:#e09b00}
+.privacy-note{font-size:11px;color:#52606d}
+.feature-panel{background:#f8fafc;border:1px solid #cad4de;border-radius:8px;padding:10px;margin:10px 0}
+.feature-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:8px}
+.mobile-steps{display:none;gap:5px;overflow:auto;padding:7px 14px;background:#1c1c1c;position:sticky;top:58px;z-index:25}
+.mobile-steps button{white-space:nowrap;background:#333;color:#fff;border-color:#555}
+.mobile-steps button.active{background:var(--accent);color:#111;border-color:var(--accent)}
+.validation-list{margin:8px 0 0;padding-left:22px}
+.validation-list li{margin:4px 0}
+.validation-list .error{color:#a61b14}.validation-list .warn{color:#8a5900}
+.invalid-field{outline:3px solid #d93025!important;outline-offset:1px}
+.recent-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.recent-card{border:1px solid #c4cdd5;border-radius:8px;padding:9px;background:#fff}
+.recent-card b,.recent-card small{display:block}.recent-card small{color:#5d6872;margin:4px 0 8px}
+.bulk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:7px;align-items:end}
+.report-notes{border:1px solid #777;padding:5px;margin-top:6px;font-size:8px;white-space:pre-wrap;break-inside:avoid}
+.signoff{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;font-size:8px;break-inside:avoid}
+.sign-line{border-top:1px solid #555;padding-top:3px;margin-top:18px}
+.revision-strip{font-size:7px;margin-top:4px;color:#444}
+.record-link{display:flex;align-items:center;gap:7px;border:1px solid #777;padding:5px;margin-top:6px;font-size:7px;break-inside:avoid}
+.record-link img,.record-link canvas,.record-link table{width:42px!important;height:42px!important}
+.progress-shell{max-width:1500px;margin:8px auto;padding:0 14px}
+.progress-track{height:8px;background:#dbe2e8;border-radius:999px;overflow:hidden}.progress-fill{height:100%;width:0;background:var(--accent);transition:width .25s}
+.progress-copy{display:flex;justify-content:space-between;font-size:12px;margin-top:5px;color:#45515c}
+.toast-stack{position:fixed;right:16px;bottom:16px;z-index:100;display:grid;gap:7px;max-width:min(360px,calc(100vw - 32px))}
+.toast{background:#151515;color:#fff;border-left:5px solid var(--accent);padding:11px 14px;border-radius:7px;box-shadow:0 8px 25px rgba(0,0,0,.25);animation:toast-in .2s ease}
+@keyframes toast-in{from{transform:translateY(8px);opacity:0}}
+.tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:90;display:grid;place-items:center;padding:18px}
+.tour-backdrop[hidden]{display:none!important}
+.tour-card{position:relative;max-width:520px;background:#fff;border-radius:12px;padding:22px;box-shadow:0 18px 70px rgba(0,0,0,.4)}
+.tour-close{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:26px;line-height:1;padding:6px 9px;border-radius:6px}
+.tour-card h2{margin-top:0}.tour-count{font-size:12px;color:#66717c}.tour-actions{display:flex;justify-content:space-between;gap:8px;margin-top:18px}
+.help-badge{border-radius:50%;width:25px;height:25px;padding:0;margin-left:6px;font-weight:bold;background:#eef3f7}
+.collapse-btn{margin-left:auto;font-size:12px}
+.panel.collapsed>*:not(h3):not(.panel-heading){display:none!important}
+.panel-heading{display:flex;align-items:center;gap:6px}.panel-heading h3{margin-right:auto}
+.empty-state{text-align:center;border:2px dashed #aeb9c2;border-radius:8px;padding:22px;color:#57636e;background:#f8fafb}
+.stage-placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;padding:24px;pointer-events:none}
+.stage-continue{display:none}
+.search-hit{outline:4px solid #0b72e7!important;outline-offset:2px}
+.mobile-bottom{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;background:#fff;border-top:1px solid #b8c1ca;padding:8px;gap:8px;box-shadow:0 -5px 18px rgba(0,0,0,.15)}
+.mobile-bottom button{flex:1}
+.release-checklist{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:7px;margin-top:8px}
+.release-checklist label{display:flex;align-items:center;gap:7px;padding:7px;border:1px solid #ccd4db;border-radius:6px;background:#fff}
+.release-checklist input{width:auto}
+.circuit-title{background-color:var(--device-color,var(--accent));background-image:repeating-linear-gradient(135deg,transparent 0 9px,rgba(255,255,255,.22) 9px 12px)}
+:focus-visible{outline:3px solid #0b72e7!important;outline-offset:2px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 .branding-grid{display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:start}
 .logo-preview{height:115px;border:1px dashed #9aa5af;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;overflow:hidden;padding:4px}
@@ -150,16 +210,27 @@ canvas{display:block;max-width:none}
 .mode-note{padding:8px;border-radius:5px;background:#f5f8fb;border:1px solid #c4d2df;margin:7px 0}
 
 @media(max-width:850px){
- .meta-grid,.theme-grid{grid-template-columns:1fr 1fr}
+ .meta-grid,.theme-grid,.feature-grid,.bulk-grid{grid-template-columns:1fr 1fr}
  .branding-grid,.photo-grid,.cover-photos,.capture-grid{grid-template-columns:1fr}
  .report-header:not(#printReport .report-header){grid-template-columns:1fr}
  .vertical .device{grid-template-columns:120px 1fr}
  .vertical .circuit-title{writing-mode:horizontal-tb;transform:none;grid-column:1/-1;min-height:auto;border:1px solid var(--line)}
  .vertical .loads{grid-column:1/-1}
+ .command-bar{position:relative;padding:8px}.save-pill{margin-left:0}.privacy-note{width:100%}
+ body.field-mode .mobile-steps{display:flex}
+ body.field-mode main>.panel{display:none}
+ body.field-mode main>.panel.mobile-active{display:block}
+ body.field-mode main{padding:8px}
+ body.field-mode button,body.field-mode .button{min-height:44px}
+ body.field-mode input,body.field-mode select,body.field-mode textarea{font-size:16px;min-height:42px}
+ body.field-mode .mobile-bottom{display:flex}
+ body.field-mode{padding-bottom:70px}
+ body.field-mode .stage-continue{display:block;width:100%;margin-top:10px}
+ .release-checklist{grid-template-columns:1fr}
 }
 @media print{
  body{background:#fff;margin:0}
- header,.no-print,.device-actions,#sections{display:none!important}
+ header,.command-bar,.mobile-steps,.no-print,.device-actions,#sections{display:none!important}
  main{max-width:none;padding:0;margin:0}
  .panel{border:0;padding:0;margin:0;box-shadow:none}
  .print-only{display:block!important}
@@ -178,9 +249,34 @@ canvas{display:block;max-width:none}
 </head>
 <body>
 <header>
- <h1>Switchboard Documentation Builder v4.5</h1>
- <p>Professional HTML field-documentation and PDF reporting tool</p>
+ <h1>Switchboard Documentation Builder v5.1</h1>
+ <p>Field capture, circuit scheduling, recovery and print-ready reporting</p>
 </header>
+<nav class="command-bar no-print" aria-label="Project commands">
+ <div class="command-inner">
+  <button id="fieldMode">Field mode</button>
+  <button id="startTour">Guided tour</button>
+  <button id="openExample">Open example</button>
+  <button id="undoBtn" title="Undo (Ctrl/Cmd+Z)">Undo</button>
+  <button id="redoBtn" title="Redo (Ctrl/Cmd+Shift+Z)">Redo</button>
+  <button id="recoverDraft">Recover draft</button>
+  <button id="saveTemplate">Save template</button>
+  <button id="applyTemplate">Apply template</button>
+  <button id="showProjects">Recent projects</button>
+  <button id="validateProject">Validate</button>
+  <button id="installApp" hidden>Install app</button>
+  <span class="privacy-note">Photos and drafts stay on this device unless you export them.</span>
+  <span id="saveStatus" class="save-pill"><span class="save-dot"></span><span>Autosave ready</span></span>
+ </div>
+</nav>
+<div class="progress-shell no-print">
+ <div class="progress-track" role="progressbar" aria-label="Project completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill" class="progress-fill"></div></div>
+ <div class="progress-copy"><span id="progressText">Start with report details</span><span id="progressPercent">0%</span></div>
+</div>
+<div id="mobileSteps" class="mobile-steps no-print" aria-label="Field workflow">
+ <button data-step="0" class="active">1 Setup</button><button data-step="1">2 Photos</button><button data-step="2">3 Crop</button>
+ <button data-step="3">4 Divide</button><button data-step="4">5 Schedule</button><button data-step="5">6 Review</button>
+</div>
 <main>
 
 <section class="panel no-print">
@@ -204,6 +300,23 @@ canvas{display:block;max-width:none}
     <label>Document reference<input id="documentRef" type="text"></label>
    </div>
   </div>
+ </div>
+</section>
+
+<section class="panel no-print">
+ <h3>Document control</h3>
+ <div class="feature-grid">
+  <label>Revision<input id="revisionNo" type="text" value="A"></label>
+  <label>Revision date<input id="revisionDate" type="text"></label>
+  <label>Revision description<input id="revisionDescription" type="text" placeholder="Initial issue"></label>
+  <label>Digital record URL<input id="digitalRecordUrl" type="text" placeholder="Optional link shown in report"></label>
+ </div>
+ <label style="display:block;margin-top:8px">Report notes / limitations<textarea id="reportNotes" rows="3" placeholder="Optional scope, assumptions, exclusions or inspection notes"></textarea></label>
+ <div class="feature-grid" style="margin-top:8px">
+  <label>Approved by<input id="approvedBy" type="text"></label>
+  <label>Approval role<input id="approvalRole" type="text" placeholder="Supervisor / electrician"></label>
+  <label style="display:flex;align-items:center;gap:8px;margin-top:22px"><input id="includeSignoff" type="checkbox" style="width:auto"> Include sign-off area</label>
+  <label style="display:flex;align-items:center;gap:8px;margin-top:22px"><input id="includeRecordLink" type="checkbox" style="width:auto"> Include digital record QR/link</label>
  </div>
 </section>
 
@@ -352,6 +465,7 @@ canvas{display:block;max-width:none}
    <div><b>Prepared:</b> <span id="printPreparedBy"></span></div>
    <div><b>Licence:</b> <span id="printLicence"></span></div>
    <div><b>Ref:</b> <span id="printRef"></span></div>
+   <div><b>Revision:</b> <span id="printRevision"></span></div>
   </div>
  </div>
  <div class="cover-photos" id="printCoverPhotos">
@@ -359,7 +473,14 @@ canvas{display:block;max-width:none}
   <div class="cover-card" id="printLocationPhotoCard"><img id="printLocationPhoto"><div class="caption" id="printLocationCaption"></div></div>
  </div>
  <div id="printSections"></div>
- <footer id="printFooter" class="report-footer"><span id="footerLeft"></span><span>Switchboard Documentation Builder v4.5</span></footer>
+ <div id="printNotes" class="report-notes" hidden></div>
+ <div id="printRecordLink" class="record-link" hidden><div id="printQr" role="img" aria-label="Digital record QR code"></div><span id="printRecordText"></span></div>
+ <div id="printSignoff" class="signoff" hidden>
+  <div><div class="sign-line">Prepared by / signature</div></div>
+  <div><div class="sign-line">Approved by / signature</div></div>
+ </div>
+ <div id="printRevisionStrip" class="revision-strip"></div>
+ <footer id="printFooter" class="report-footer"><span id="footerLeft"></span><span>Switchboard Documentation Builder v5.1</span></footer>
 </section>
 
 <section class="panel">
@@ -369,11 +490,48 @@ canvas{display:block;max-width:none}
   <label class="button">Load project<input id="loadProject" type="file" accept=".json" hidden></label>
   <button id="printPdf" class="primary">Print / Save as PDF</button>
  </div>
+ <div class="feature-panel no-print">
+  <b>Fast entry</b>
+  <div class="bulk-grid" style="margin-top:7px">
+   <label>Find circuit<input id="circuitSearch" type="text" placeholder="Number or description"></label>
+   <button id="findCircuit">Find circuit</button>
+   <label>Start circuit no.<input id="bulkStart" type="number" min="1" value="1"></label>
+   <label>Device type<select id="bulkType"></select></label>
+   <label>Rating / curve<input id="bulkRating" type="text" placeholder="20A C-curve"></label>
+   <label>Make / model<input id="bulkMake" type="text" placeholder="NHP / Clipsal"></label>
+   <label>Saved preset<select id="devicePreset"><option value="">Choose preset…</option></select></label>
+   <button id="saveDevicePreset">Save preset</button>
+   <button id="applyBulk" class="primary">Apply to empty fields</button>
+  </div>
+ </div>
+ <div class="feature-panel no-print">
+  <b>Issue checklist</b>
+  <div class="release-checklist">
+   <label><input id="checkIdentification" type="checkbox"> Board identification verified</label>
+   <label><input id="checkTesting" type="checkbox"> Circuit information tested/confirmed</label>
+   <label><input id="checkPhotos" type="checkbox"> Photographs reviewed</label>
+   <label><input id="checkApproval" type="checkbox"> Report approved for issue</label>
+  </div>
+  <p style="margin-bottom:0"><b>PDF tip:</b> choose <b>Save as PDF</b>, use the suggested orientation, set margins to none/default, and enable background graphics so circuit colours print correctly.</p>
+ </div>
+ <div id="validationPanel" class="feature-panel no-print" hidden></div>
+ <div id="recentProjects" class="feature-panel no-print" hidden></div>
  <div class="tip no-print"><b>Colour coding:</b> every device has its own colour picker. Use colours for power, lighting, mechanical, fire, controls, essential services, UPS, emergency or any scheme you prefer.</div>
  <div id="sections"></div>
 </section>
 </main>
+<div id="emptySchedule" class="empty-state no-print" hidden>Build a capture section or add a device to begin the circuit schedule.</div>
+<div id="toastStack" class="toast-stack" aria-live="polite"></div>
+<div id="tourBackdrop" class="tour-backdrop no-print" hidden>
+ <section class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+  <button id="closeTour" class="tour-close" type="button" aria-label="Close guided tour">×</button>
+  <div id="tourCount" class="tour-count"></div><h2 id="tourTitle"></h2><p id="tourBody"></p>
+  <div class="tour-actions"><button id="skipTour">Skip tour</button><div><button id="tourBack">Back</button> <button id="tourNext" class="primary">Next</button></div></div>
+ </section>
+</div>
+<nav class="mobile-bottom no-print" aria-label="Mobile field navigation"><button id="mobileBack">Back</button><button id="mobileSave">Save</button><button id="mobileNext" class="primary">Continue</button></nav>
 
+<script src="./qrcode.min.js"></script>
 <script>
 const originalCanvas=document.getElementById('originalCanvas'),octx=originalCanvas.getContext('2d',{willReadFrequently:true});
 const cropCanvas=document.getElementById('cropCanvas'),cctx=cropCanvas.getContext('2d',{willReadFrequently:true});
@@ -388,12 +546,25 @@ function updateDividerGuidance(){const m=captureMode.value;dividerStatus.textCon
 const DEFAULT_LOGO='';
 let logoData=DEFAULT_LOGO,boardOverviewData='',locationPhotoData='';
 const breakerTypes=['MCB','RCBO','RCD','Main Switch / Isolator','Contactor','Timer','SPD','Meter','VSD','Thermal Overload','MPCB / Motor Protector','Relay','Power Supply','PLC / Controller','Other'];
+let isRestoring=false,autosaveTimer=null,focusSnapshot=null,deferredInstallPrompt=null;
+const undoStack=[],redoStack=[],DRAFT_KEY='switchboard-v5-draft',RECENTS_KEY='switchboard-v5-recents',TEMPLATE_KEY='switchboard-v5-template';
 
 function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
 function typeOptions(selected=''){return breakerTypes.map(t=>`<option ${t===selected?'selected':''}>${t}</option>`).join('')}
+function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+async function optimiseImage(file,maxDimension=2200,quality=.84){
+ const raw=await fileToDataURL(file),img=new Image();
+ await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=raw});
+ const scale=Math.min(1,maxDimension/Math.max(img.naturalWidth,img.naturalHeight));
+ if(scale===1&&file.size<1800000)return raw;
+ const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.naturalWidth*scale));c.height=Math.max(1,Math.round(img.naturalHeight*scale));
+ c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+ return c.toDataURL('image/jpeg',quality);
+}
 function readImage(input,cb){
- const f=input.files[0]; if(!f)return;
- const r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsDataURL(f);
+ const f=input.files[0];if(!f)return;
+ setSaveStatus('Optimising photo…',true);
+ optimiseImage(f).then(data=>{cb(data);scheduleAutosave();setSaveStatus('Photo optimised')}).catch(()=>fileToDataURL(f).then(cb));
 }
 document.getElementById('logoInput').onchange=e=>readImage(e.target,data=>{logoData=data;logoPreview.src=data;printLogo.src=data});
 document.getElementById('boardOverviewInput').onchange=e=>readImage(e.target,data=>{boardOverviewData=data;boardOverviewPreview.src=data});
@@ -427,7 +598,7 @@ function createSection(data={}){
  section.querySelector('.section-direction').onchange=e=>{content.className='section-content '+e.target.value;updateSectionSizing(section)};
  section.querySelector('.section-color').oninput=e=>section.querySelector('.section-head').style.background=e.target.value;
  section.querySelector('.add-device').onclick=()=>addDevice(content,{});
- section.querySelector('.delete-section').onclick=()=>section.remove();
+ section.querySelector('.delete-section').onclick=()=>{if(confirm('Delete this entire schedule section?')){section.remove();toast('Section deleted');updateProgress()}};
  sectionsEl.appendChild(section);
  (data.devices||[]).forEach(d=>addDevice(content,d));
  updateSectionSizing(section);
@@ -451,7 +622,7 @@ function addDevice(content,data={}){
    <button class="up">← / ↑</button><button class="down">→ / ↓</button><button class="remove">Remove</button>
   </div>`;
  d.querySelector('.device-color').oninput=e=>d.style.setProperty('--device-color',e.target.value);
- d.querySelector('.remove').onclick=()=>{d.remove();updateSectionSizing(content.closest('.section'))};
+ d.querySelector('.remove').onclick=()=>{if(confirm('Remove this device from the schedule?')){d.remove();updateSectionSizing(content.closest('.section'));toast('Device removed');updateProgress()}};
  d.querySelector('.up').onclick=()=>d.previousElementSibling&&content.insertBefore(d,d.previousElementSibling);
  d.querySelector('.down').onclick=()=>d.nextElementSibling&&content.insertBefore(d.nextElementSibling,d);
  d.querySelector('.merge').onclick=()=>mergeNext(d);
@@ -472,6 +643,7 @@ function mergeNext(d){
 }
 
 applyBoardType.onclick=()=>{
+ if(sectionsEl.children.length&&!confirm('Applying a new board layout will replace the current schedule sections. Continue?'))return;
  const type=boardType.value;sectionsEl.innerHTML='';
  if(type==='horizontal')renderCaptureList();
 updateDividerGuidance();
@@ -484,9 +656,22 @@ addSection.onclick=()=>createSection({title:'New section',direction:(boardType.v
 boardType.onchange=()=>{}; dividerAxis.onchange=()=>{};
 
 fileInput.onchange=e=>e.target.files[0]&&loadFile(e.target.files[0]);
-function loadFile(file){const r=new FileReader();r.onload=e=>{imageDataURL=e.target.result;const img=new Image();img.onload=()=>{sourceImage=img;rotation=0;drawOriginal();useFullCrop()};img.src=imageDataURL};r.readAsDataURL(file)}
+async function loadFile(file){
+ setSaveStatus('Optimising field photo…',true);
+ imageDataURL=await optimiseImage(file,2400,.86);
+ const img=new Image();img.onload=()=>{sourceImage=img;rotation=0;drawOriginal();useFullCrop();scheduleAutosave();assessPhotoQuality()};img.src=imageDataURL;
+}
+function assessPhotoQuality(){
+ if(!originalCanvas.width)return;
+ const w=originalCanvas.width,h=originalCanvas.height,sample=document.createElement('canvas'),size=96;sample.width=size;sample.height=size;
+ const x=sample.getContext('2d',{willReadFrequently:true});x.drawImage(originalCanvas,0,0,size,size);
+ const data=x.getImageData(0,0,size,size).data;let edges=0,count=0;
+ for(let y=1;y<size-1;y+=2)for(let xx=1;xx<size-1;xx+=2){const i=(y*size+xx)*4,r=(y*size+xx+1)*4,d=((y+1)*size+xx)*4;edges+=Math.abs(data[i]-data[r])+Math.abs(data[i+1]-data[r+1])+Math.abs(data[i+2]-data[r+2])+Math.abs(data[i]-data[d])+Math.abs(data[i+1]-data[d+1])+Math.abs(data[i+2]-data[d+2]);count++}
+ const score=edges/Math.max(1,count);setSaveStatus(score<38?'Photo may be blurry — check labels':'Photo optimised and ready');
+}
 function drawOriginal(){
  if(!sourceImage)return;
+ if(document.getElementById('originalHelp'))document.getElementById('originalHelp').hidden=true;
  const rotated=rotation%180!==0,maxW=1350,nw=rotated?sourceImage.height:sourceImage.width,nh=rotated?sourceImage.width:sourceImage.height,scale=Math.min(1,maxW/nw);
  originalCanvas.width=Math.round(nw*scale);originalCanvas.height=Math.round(nh*scale);
  octx.save();octx.clearRect(0,0,originalCanvas.width,originalCanvas.height);octx.translate(originalCanvas.width/2,originalCanvas.height/2);octx.rotate(rotation*Math.PI/180);
@@ -507,6 +692,7 @@ function showOverlay(){if(!cropRect)return;cropOverlay.style.display='block';cro
 useFull.onclick=useFullCrop;document.getElementById('applyCrop').onclick=applySelectedCrop;
 function applySelectedCrop(){
  if(!cropRect||cropRect.w<10||cropRect.h<10)return alert('Draw a crop first.');
+ if(document.getElementById('cropHelp'))document.getElementById('cropHelp').hidden=true;
  cropCanvas.width=Math.round(cropRect.w);cropCanvas.height=Math.round(cropRect.h);cctx.clearRect(0,0,cropCanvas.width,cropCanvas.height);
  cctx.drawImage(originalCanvas,cropRect.x,cropRect.y,cropRect.w,cropRect.h,0,0,cropCanvas.width,cropCanvas.height);dividerXs=[];renderDividers();
 }
@@ -523,10 +709,10 @@ detect.onclick=()=>{
  if(!cropCanvas.width)return alert('Apply a crop first.');
  const count=Math.max(1,parseInt(expected.value)||1),snapv=parseInt(snap.value)||0,axis=effectiveDividerAxis(),scores=edgeScores(axis),length=axis==='vertical'?cropCanvas.width:cropCanvas.height,spacing=length/count;if(captureMode.value==='single'){dividerXs=[];renderDividers();return;}
  dividerXs=[];for(let i=1;i<count;i++){const ideal=i*spacing,r=Math.min(snapv,Math.floor(spacing*.42));let best=ideal,bestScore=-1;
-  for(let p=Math.max(2,Math.round(ideal-r));p<=Math.min(length-2,Math.round(ideal+r));p++){if(scores[p]>bestScore){bestScore=scores[p];best=p}}dividerXs.push(best)}renderDividers();saveActiveCaptureState();
+  for(let p=Math.max(2,Math.round(ideal-r));p<=Math.min(length-2,Math.round(ideal+r));p++){if(scores[p]>bestScore){bestScore=scores[p];best=p}}dividerXs.push(best)}renderDividers();saveActiveCaptureState();toast(`${dividerXs.length} divider${dividerXs.length===1?'':'s'} suggested — drag to adjust`);
 };
 addDivider.onclick=()=>{if(cropCanvas.width&&captureMode.value!=='single'){const axis=effectiveDividerAxis();dividerXs.push((axis==='vertical'?cropCanvas.width:cropCanvas.height)/2);renderDividers();saveActiveCaptureState()}};
-clearDividers.onclick=()=>{dividerXs=[];renderDividers();saveActiveCaptureState()};
+clearDividers.onclick=()=>{if(dividerXs.length&&!confirm('Clear all divider lines in this capture section?'))return;dividerXs=[];renderDividers();saveActiveCaptureState();toast('Dividers cleared')};
 cropStage.onclick=e=>{if(e.target!==cropCanvas||!e.shiftKey)return;const r=cropCanvas.getBoundingClientRect(),axis=effectiveDividerAxis();dividerXs.push(axis==='vertical'?e.clientX-r.left:e.clientY-r.top);renderDividers()};
 function renderDividers(){
  cropStage.querySelectorAll('.divider,.center-divider').forEach(d=>d.remove());
@@ -572,7 +758,7 @@ build.onclick=()=>{
    devices.push({crop:left.toDataURL('image/jpeg',.92),circuit:String(r*2+1)});devices.push({crop:right.toDataURL('image/jpeg',.92),circuit:String(r*2+2)});
   }
  }
- devices.forEach(d=>addDevice(content,{...d,color:accentColor.value}));updateSectionSizing(section);
+ devices.forEach(d=>addDevice(content,{...d,color:accentColor.value}));updateSectionSizing(section);toast(`${devices.length} device${devices.length===1?'':'s'} built into the schedule`);updateProgress();
 };
 
 function makeCaptureId(){return 'cap-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)}
@@ -581,30 +767,242 @@ function renderCaptureList(){captureList.innerHTML='';captureRegions.forEach(c=>
 function selectCapture(id){saveActiveCaptureState();const c=captureRegions.find(x=>x.id===id);if(!c)return;activeCaptureId=id;captureName.value=c.name;captureMode.value=c.mode;expected.value=c.expected||1;cropRect={...c.cropRect};showOverlay();applySelectedCrop();dividerXs=[...(c.dividers||[])];centerSplitX=c.centerSplitX??cropCanvas.width/2;renderDividers();renderCaptureList()}
 addCapture.onclick=()=>{if(!cropRect||cropRect.w<10||cropRect.h<10)return alert('Draw a crop around this board section first.');const c={id:makeCaptureId(),name:captureName.value.trim()||`Section ${captureRegions.length+1}`,mode:captureMode.value,cropRect:{...cropRect},dividers:[],centerSplitX:null,expected:parseInt(expected.value)||1};captureRegions.push(c);activeCaptureId=c.id;applySelectedCrop();centerSplitX=cropCanvas.width/2;dividerXs=[];renderDividers();renderCaptureList()};
 updateCapture.onclick=()=>{const c=activeCapture();if(!c)return alert('Select a capture section first.');if(cropRect)c.cropRect={...cropRect};c.name=captureName.value.trim()||c.name;c.mode=captureMode.value;c.expected=parseInt(expected.value)||c.expected;applySelectedCrop();c.dividers=[];dividerXs=[];centerSplitX=cropCanvas.width/2;c.centerSplitX=centerSplitX;renderDividers();renderCaptureList()};
-deleteCapture.onclick=()=>{const c=activeCapture();if(!c)return;captureRegions=captureRegions.filter(x=>x.id!==c.id);sectionsEl.querySelector(`[data-capture-id="${c.id}"]`)?.remove();activeCaptureId=captureRegions[0]?.id||null;if(activeCaptureId)selectCapture(activeCaptureId);else{dividerXs=[];centerSplitX=null;renderDividers();renderCaptureList()}};
+deleteCapture.onclick=()=>{const c=activeCapture();if(!c)return;if(!confirm(`Delete capture section “${c.name}” and its generated schedule section?`))return;captureRegions=captureRegions.filter(x=>x.id!==c.id);sectionsEl.querySelector(`[data-capture-id="${c.id}"]`)?.remove();activeCaptureId=captureRegions[0]?.id||null;if(activeCaptureId)selectCapture(activeCaptureId);else{dividerXs=[];centerSplitX=null;renderDividers();renderCaptureList()}toast('Capture section deleted');updateProgress()};
 captureMode.onchange=()=>{dividerXs=[];centerSplitX=cropCanvas.width/2;saveActiveCaptureState();renderDividers()};captureName.oninput=saveActiveCaptureState;
 function projectData(){
- saveActiveCaptureState();return {version:4.5,imageDataURL,rotation,cropRect,dividerXs,captureRegions,activeCaptureId,logoData,boardOverviewData,locationPhotoData,
+ saveActiveCaptureState();return {version:5.1,imageDataURL,rotation,cropRect,dividerXs,captureRegions,activeCaptureId,logoData,boardOverviewData,locationPhotoData,
  boardType:boardType.value,dividerAxis:dividerAxis.value,paper:paper.value,orientation:orientation.value,output:{density:reportDensity.value,devicesPerRow:devicesPerRow.value,headerSize:headerSize.value,includePhotos:includePhotos.checked,includeMake:includeMake.checked,includeType:includeType.checked,includeRating:includeRating.checked,includeFooter:includeFooter.checked},
  theme:{primary:primaryColor.value,secondary:secondaryColor.value,accent:accentColor.value},
  branding:{companyName:companyName.value,reportSubtitle:reportSubtitle.value,preparedBy:preparedBy.value,licenceNo:licenceNo.value,documentRef:documentRef.value,
  boardOverviewCaption:boardOverviewCaption.value,locationPhotoCaption:locationPhotoCaption.value},
+ control:{revisionNo:revisionNo.value,revisionDate:revisionDate.value,revisionDescription:revisionDescription.value,digitalRecordUrl:digitalRecordUrl.value,reportNotes:reportNotes.value,approvedBy:approvedBy.value,approvalRole:approvalRole.value,includeSignoff:includeSignoff.checked,includeRecordLink:includeRecordLink.checked,checkIdentification:checkIdentification.checked,checkTesting:checkTesting.checked,checkPhotos:checkPhotos.checked,checkApproval:checkApproval.checked},
  meta:{site:site.value,board:board.value,location:location.value,date:date.value},
  sections:[...document.querySelectorAll('.section')].map(s=>({title:s.querySelector('.section-title').value,color:s.querySelector('.section-color').value,direction:s.querySelector('.section-content').classList.contains('vertical')?'vertical':'horizontal',
  devices:[...s.querySelectorAll('.device')].map(d=>({crop:d.querySelector('.device-photo').src,type:d.querySelector('.type').value,rating:d.querySelector('.rating').value,make:d.querySelector('.make').value,circuit:d.querySelector('.circuit-title').value,loads:d.querySelector('.loads').value,color:d.querySelector('.device-color').value}))}))};
 }
-saveProject.onclick=()=>{const blob=new Blob([JSON.stringify(projectData())],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='switchboard-project-v4-5.json';a.click();URL.revokeObjectURL(a.href)};
-loadProject.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const p=JSON.parse(r.result);
+saveProject.onclick=()=>{const p=projectData(),blob=new Blob([JSON.stringify(p)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`switchboard-${(p.meta.board||'project').replace(/[^a-z0-9]+/gi,'-')}-v5.json`;a.click();URL.revokeObjectURL(a.href);saveRecentProject(p,true)};
+async function restoreProject(p){
+ isRestoring=true;
  imageDataURL=p.imageDataURL||'';rotation=p.rotation||0;cropRect=p.cropRect||null;dividerXs=p.dividerXs||[];captureRegions=p.captureRegions||[];activeCaptureId=p.activeCaptureId||captureRegions[0]?.id||null;logoData=p.logoData||DEFAULT_LOGO;boardOverviewData=p.boardOverviewData||'';locationPhotoData=p.locationPhotoData||'';
  boardType.value=p.boardType||'horizontal';dividerAxis.value=p.dividerAxis||'auto';paper.value=p.paper||'A4';orientation.value=p.orientation||'auto';updateDividerGuidance();
  if(p.output){reportDensity.value=p.output.density||'standard';devicesPerRow.value=p.output.devicesPerRow||'auto';headerSize.value=p.output.headerSize||'small';includePhotos.checked=p.output.includePhotos!==false;includeMake.checked=p.output.includeMake!==false;includeType.checked=p.output.includeType!==false;includeRating.checked=p.output.includeRating!==false;includeFooter.checked=p.output.includeFooter!==false}
  if(p.theme){primaryColor.value=p.theme.primary;secondaryColor.value=p.theme.secondary;accentColor.value=p.theme.accent;applyTheme()}
  Object.entries(p.branding||{}).forEach(([k,v])=>{if(document.getElementById(k))document.getElementById(k).value=v||''});
  Object.entries(p.meta||{}).forEach(([k,v])=>document.getElementById(k).value=v||'');
+ Object.entries(p.control||{}).forEach(([k,v])=>{const el=document.getElementById(k);if(el){if(el.type==='checkbox')el.checked=!!v;else el.value=v||''}});
  if(logoData){logoPreview.src=logoData;printLogo.src=logoData}if(boardOverviewData)boardOverviewPreview.src=boardOverviewData;if(locationPhotoData)locationPreview.src=locationPhotoData;
  sectionsEl.innerHTML='';(p.sections||[]).forEach(createSection);
- if(imageDataURL){const img=new Image();img.onload=()=>{sourceImage=img;drawOriginal();if(activeCaptureId)selectCapture(activeCaptureId);else{cropRect=p.cropRect;showOverlay();applySelectedCrop();dividerXs=p.dividerXs||[];renderDividers()}renderCaptureList()};img.src=imageDataURL}else renderCaptureList()
- };r.readAsText(f)};
+ if(imageDataURL){const img=new Image();await new Promise(resolve=>{img.onload=()=>{sourceImage=img;drawOriginal();if(activeCaptureId)selectCapture(activeCaptureId);else{cropRect=p.cropRect;showOverlay();applySelectedCrop();dividerXs=p.dividerXs||[];renderDividers()}renderCaptureList();resolve()};img.src=imageDataURL})}else{sourceImage=null;renderCaptureList()}
+ applyTheme();isRestoring=false;setSaveStatus('Project restored');
+}
+loadProject.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{try{const p=JSON.parse(r.result);pushUndo();await restoreProject(p);scheduleAutosave();saveRecentProject(p,true)}catch(err){alert('This project file could not be opened.')}};r.readAsText(f)};
+
+function setSaveStatus(text,busy=false){
+ const el=document.getElementById('saveStatus');if(!el)return;el.classList.toggle('saving',busy);el.querySelector('span:last-child').textContent=text;
+}
+function toast(message){
+ const el=document.createElement('div');el.className='toast';el.textContent=message;toastStack.appendChild(el);setTimeout(()=>el.remove(),3200);
+}
+function updateProgress(){
+ const devices=[...document.querySelectorAll('.device')],completeDevices=devices.filter(d=>d.querySelector('.circuit-title').value.trim()&&d.querySelector('.loads').value.trim()).length;
+ const checks=[
+  !!(companyName.value.trim()&&board.value.trim()),
+  !!(boardOverviewData||locationPhotoData||imageDataURL),
+  !!cropCanvas.width,
+  !!captureRegions.length,
+  !!devices.length,
+  !!(devices.length&&completeDevices===devices.length&&checkIdentification.checked&&checkPhotos.checked)
+ ];
+ const percent=Math.round(checks.filter(Boolean).length/checks.length*100),labels=['Complete report and board details','Add board or device photographs','Crop the breaker/device area','Create and divide a capture section',devices.length?`Complete circuit details (${completeDevices}/${devices.length})`:'Build the circuit schedule','Validate and complete the issue checklist'];
+ const next=Math.max(0,checks.findIndex(x=>!x));progressFill.style.width=percent+'%';progressPercent.textContent=percent+'%';progressText.textContent=percent===100?'Ready to issue':labels[next];
+ document.querySelector('.progress-track').setAttribute('aria-valuenow',String(percent));
+ emptySchedule.hidden=!!devices.length;if(emptySchedule.parentElement!==sectionsEl.parentElement)sectionsEl.parentElement.insertBefore(emptySchedule,sectionsEl);
+}
+function compactProject(p){
+ const copy=structuredClone(p);copy.imageDataURL='';copy.boardOverviewData='';copy.locationPhotoData='';copy.logoData='';
+ copy.sections?.forEach(s=>s.devices?.forEach(d=>d.crop=''));return copy;
+}
+function scheduleAutosave(){
+ if(isRestoring)return;setSaveStatus('Saving…',true);clearTimeout(autosaveTimer);
+ autosaveTimer=setTimeout(()=>{try{const p=projectData();localStorage.setItem(DRAFT_KEY,JSON.stringify(p));setSaveStatus('Saved on this device');saveRecentProject(p,false);updateProgress()}catch(e){setSaveStatus('Draft too large — export project');}},650);
+}
+function saveRecentProject(p,force){
+ try{
+  const key=[p.meta?.site,p.meta?.board].filter(Boolean).join(' — ')||'Untitled switchboard';
+  let items=JSON.parse(localStorage.getItem(RECENTS_KEY)||'[]').filter(x=>x.key!==key);
+  items.unshift({key,updated:new Date().toISOString(),project:force?p:compactProject(p)});items=items.slice(0,4);
+  localStorage.setItem(RECENTS_KEY,JSON.stringify(items));
+ }catch(e){}
+}
+function pushUndo(snapshot){
+ if(isRestoring)return;undoStack.push(structuredClone(snapshot||projectData()));if(undoStack.length>15)undoStack.shift();redoStack.length=0;updateUndoButtons();
+}
+function updateUndoButtons(){undoBtn.disabled=!undoStack.length;redoBtn.disabled=!redoStack.length}
+undoBtn.onclick=async()=>{if(!undoStack.length)return;redoStack.push(structuredClone(projectData()));await restoreProject(undoStack.pop());updateUndoButtons();scheduleAutosave()};
+redoBtn.onclick=async()=>{if(!redoStack.length)return;undoStack.push(structuredClone(projectData()));await restoreProject(redoStack.pop());updateUndoButtons();scheduleAutosave()};
+recoverDraft.onclick=async()=>{const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return alert('No recoverable draft is stored on this device yet.');pushUndo();await restoreProject(JSON.parse(raw));scheduleAutosave()};
+
+saveTemplate.onclick=()=>{
+ const p=projectData(),template={output:p.output,theme:p.theme,branding:p.branding,control:p.control};
+ localStorage.setItem(TEMPLATE_KEY,JSON.stringify(template));setSaveStatus('Company template saved');
+};
+applyTemplate.onclick=async()=>{
+ const raw=localStorage.getItem(TEMPLATE_KEY);if(!raw)return alert('Save a template first.');
+ pushUndo();const current=projectData(),template=JSON.parse(raw);await restoreProject({...current,...template});scheduleAutosave();
+};
+
+function renderRecentProjects(){
+ const box=document.getElementById('recentProjects'),items=JSON.parse(localStorage.getItem(RECENTS_KEY)||'[]');box.hidden=false;
+ box.innerHTML=`<b>Recent projects on this device</b><div class="recent-grid">${items.length?items.map((x,i)=>`<article class="recent-card"><b>${esc(x.key)}</b><small>${new Date(x.updated).toLocaleString()}</small><button data-recent="${i}">Open snapshot</button></article>`).join(''):'<p>No recent projects yet. Autosave will add them here.</p>'}</div>`;
+ box.querySelectorAll('[data-recent]').forEach(btn=>btn.onclick=async()=>{pushUndo();await restoreProject(items[+btn.dataset.recent].project);scheduleAutosave()});
+ box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+showProjects.onclick=renderRecentProjects;
+
+function validateCurrentProject(show=true){
+ document.querySelectorAll('.invalid-field').forEach(el=>el.classList.remove('invalid-field'));
+ const issues=[],devices=[...document.querySelectorAll('.device')],seen=new Map();
+ const add=(level,msg,el)=>{issues.push({level,msg});if(el)el.classList.add('invalid-field')};
+ if(!site.value.trim())add('warn','Site / client is blank.',site);
+ if(!board.value.trim())add('error','Board designation is required.',board);
+ if(!preparedBy.value.trim())add('warn','Prepared by is blank.',preparedBy);
+ if(!devices.length)add('error','The schedule has no devices.',sectionsEl);
+ devices.forEach((d,i)=>{
+  const circuit=d.querySelector('.circuit-title'),loads=d.querySelector('.loads'),rating=d.querySelector('.rating');
+  const id=circuit.value.trim();
+  if(!id)add('error',`Device ${i+1} has no circuit or asset ID.`,circuit);
+  else if(seen.has(id.toLowerCase())){add('error',`Duplicate circuit or asset ID: ${id}.`,circuit);seen.get(id.toLowerCase()).classList.add('invalid-field')}else seen.set(id.toLowerCase(),circuit);
+  if(!loads.value.trim())add('warn',`Circuit ${id||i+1} has no duty or load description.`,loads);
+  if(!rating.value.trim())add('warn',`Circuit ${id||i+1} has no rating or curve.`,rating);
+ });
+ [['checkIdentification','Board identification has not been confirmed.'],['checkTesting','Circuit information has not been confirmed as tested.'],['checkPhotos','Photographs have not been marked as reviewed.'],['checkApproval','The report has not been approved for issue.']].forEach(([id,msg])=>{if(!document.getElementById(id).checked)add('warn',msg,document.getElementById(id))});
+ if(show){
+  validationPanel.hidden=false;validationPanel.innerHTML=`<b>${issues.length?`${issues.length} item${issues.length===1?'':'s'} to review`:'Ready to issue'}</b>${issues.length?`<ul class="validation-list">${issues.map(x=>`<li class="${x.level}">${esc(x.msg)}</li>`).join('')}</ul>`:'<p>No missing or duplicate schedule information was found.</p>'}`;
+  validationPanel.scrollIntoView({behavior:'smooth',block:'center'});
+ }
+ return issues;
+}
+validateProject.onclick=()=>validateCurrentProject(true);
+
+bulkType.innerHTML=typeOptions('MCB');
+applyBulk.onclick=()=>{
+ pushUndo();let n=Math.max(1,parseInt(bulkStart.value)||1);
+ document.querySelectorAll('.device').forEach(d=>{const circuit=d.querySelector('.circuit-title'),type=d.querySelector('.type'),rating=d.querySelector('.rating'),make=d.querySelector('.make');
+  if(!circuit.value.trim())circuit.value=String(n);n++;
+  if(bulkType.value&&(!type.value||type.value==='Other'))type.value=bulkType.value;
+  if(bulkRating.value&&!rating.value.trim())rating.value=bulkRating.value;
+  if(bulkMake.value&&!make.value.trim())make.value=bulkMake.value;
+ });scheduleAutosave();
+};
+const PRESET_KEY='switchboard-v5-device-presets';
+function refreshDevicePresets(){
+ const items=JSON.parse(localStorage.getItem(PRESET_KEY)||'[]');devicePreset.innerHTML='<option value="">Choose preset…</option>'+items.map((x,i)=>`<option value="${i}">${esc(x.name)}</option>`).join('');
+}
+saveDevicePreset.onclick=()=>{
+ const name=prompt('Preset name',`${bulkType.value} ${bulkRating.value}`.trim());if(!name)return;
+ const items=JSON.parse(localStorage.getItem(PRESET_KEY)||'[]');items.push({name,type:bulkType.value,rating:bulkRating.value,make:bulkMake.value});localStorage.setItem(PRESET_KEY,JSON.stringify(items.slice(-12)));refreshDevicePresets();
+};
+devicePreset.onchange=()=>{const item=JSON.parse(localStorage.getItem(PRESET_KEY)||'[]')[+devicePreset.value];if(item){bulkType.value=item.type;bulkRating.value=item.rating;bulkMake.value=item.make}};
+refreshDevicePresets();
+
+findCircuit.onclick=()=>{
+ document.querySelectorAll('.search-hit').forEach(el=>el.classList.remove('search-hit'));
+ const q=circuitSearch.value.trim().toLowerCase();if(!q)return toast('Enter a circuit number or description');
+ const match=[...document.querySelectorAll('.device')].find(d=>`${d.querySelector('.circuit-title').value} ${d.querySelector('.loads').value}`.toLowerCase().includes(q));
+ if(!match)return toast('No matching circuit found');match.classList.add('search-hit');match.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>match.classList.remove('search-hit'),4500);
+};
+circuitSearch.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();findCircuit.click()}};
+
+openExample.onclick=async()=>{
+ if((sectionsEl.children.length||site.value.trim())&&!confirm('Open the example project and replace the current screen? Your autosaved draft will remain recoverable.'))return;
+ pushUndo();const example=projectData();Object.assign(example,{imageDataURL:'',boardOverviewData:'',locationPhotoData:'',captureRegions:[],activeCaptureId:null,cropRect:null,dividerXs:[]});example.meta={site:'Example Commercial Workshop',board:'DB-1',location:'Main electrical room',date:new Date().toLocaleDateString('en-AU')};
+ example.branding={...example.branding,companyName:'Example Electrical',reportSubtitle:'Switchboard Circuit Schedule and Asset Identification',preparedBy:'Field Technician',documentRef:'EX-DB1-001'};
+ example.control={...example.control,revisionNo:'A',revisionDate:example.meta.date,revisionDescription:'Initial documentation',reportNotes:'Example project — verify all site information before issue.',checkIdentification:true,checkTesting:true,checkPhotos:true,checkApproval:false};
+ example.sections=[{title:'DB-1 — DIN rail',color:'#fff4bf',direction:'horizontal',devices:[
+  {type:'Main Switch / Isolator',rating:'100A 3P',make:'NHP',circuit:'1',loads:'Main switch',color:'#ef1c16'},
+  {type:'RCD',rating:'20A',make:'NHP',circuit:'2',loads:'Three-phase outlet — workshop wall',color:'#1455d9'},
+  {type:'RCBO',rating:'20A C',make:'NHP',circuit:'3',loads:'General power outlets',color:'#ffd400'},
+  {type:'RCBO',rating:'16A C',make:'NHP',circuit:'4',loads:'Workshop lighting',color:'#ffd400'},
+  {type:'MCB',rating:'20A C',make:'NHP',circuit:'5',loads:'Hot-water service',color:'#23c91c'},
+  {type:'RCBO',rating:'20A C',make:'NHP',circuit:'6',loads:'Spare',color:'#9fa6ad'}
+ ]}];await restoreProject(example);scheduleAutosave();toast('Example project opened');updateProgress();
+};
+
+const helpCopy={
+ 'Report branding and colours':'Add the company identity and details that should appear on every issued report.',
+ 'Document control':'Track the revision, approval, notes and optional digital record linked from the PDF.',
+ 'PDF output':'Choose how much information fits on each printed page. Standard is the safest starting point.',
+ 'Board and location photographs':'Add context photos for the report cover. Large images are compressed automatically.',
+ 'Board capture sections':'Crop one board area at a time, then place divider lines between individual devices.',
+ 'Fast entry':'Number empty circuits and apply common breaker information across the schedule in one step.',
+ 'Issue checklist':'Complete these confirmations before the report is treated as ready for issue.'
+};
+function addPanelHelpers(){
+ document.querySelectorAll('main>.panel').forEach((panel,index)=>{
+  const heading=panel.querySelector(':scope>h3');if(!heading)return;
+  const wrap=document.createElement('div');wrap.className='panel-heading';heading.before(wrap);wrap.appendChild(heading);
+  const help=document.createElement('button');help.type='button';help.className='help-badge no-print';help.textContent='?';help.setAttribute('aria-label',`Help for ${heading.textContent}`);help.onclick=()=>toast(helpCopy[heading.textContent]||'Complete this section, then continue to the next stage.');wrap.appendChild(help);
+  const collapse=document.createElement('button');collapse.type='button';collapse.className='collapse-btn no-print';collapse.textContent='Collapse';collapse.onclick=()=>{panel.classList.toggle('collapsed');collapse.textContent=panel.classList.contains('collapsed')?'Expand':'Collapse'};wrap.appendChild(collapse);
+ });
+ document.querySelectorAll('button').forEach(b=>{if(!b.title)b.title=b.textContent.trim()});
+ stepGroups.forEach((ids,index)=>{const panel=document.getElementById(ids[0])?.closest('.panel');if(panel&&!panel.querySelector('.stage-continue')){const next=document.createElement('button');next.className='stage-continue primary no-print';next.textContent=index===stepGroups.length-1?'Review complete':'Continue to next stage';next.onclick=()=>showFieldStep(index+1);panel.appendChild(next)}});
+ const originalHelp=document.createElement('div');originalHelp.id='originalHelp';originalHelp.className='stage-placeholder';originalHelp.textContent='Choose or take a breaker/device photo to begin cropping.';originalStage.appendChild(originalHelp);
+ const cropHelp=document.createElement('div');cropHelp.id='cropHelp';cropHelp.className='stage-placeholder';cropHelp.textContent='Apply a crop to begin placing device dividers.';cropStage.appendChild(cropHelp);
+}
+const tourSteps=[
+ ['Welcome to field mode','Work through six simple stages: setup, photos, crop, divide, schedule and review. Your draft saves automatically on this device.'],
+ ['Capture clear photographs','Add context photos, then choose or take the breaker/device image. The builder compresses large images and warns when a photo may be blurry.'],
+ ['Crop and divide','Crop to the active equipment area. Enter the expected device count and use Place dividers; drag any suggested line to correct it.'],
+ ['Build and label the schedule','Create the schedule, then use Fast entry, presets and circuit search to work efficiently on larger boards.'],
+ ['Validate before issue','Complete the checklist and run Validate. Required omissions and duplicate circuit identifiers are highlighted before PDF output.'],
+ ['Save, install and recover','Export project JSON for your records. You can also install the app for offline use and recover the last autosaved draft.']
+];
+let tourIndex=0;
+function endTour(completed=false){
+ tourBackdrop.hidden=true;
+ localStorage.setItem('switchboard-v51-tour','done');
+ startTour.focus();
+ if(completed)toast('Tour complete — open the example project any time');
+}
+function showTourStep(index){tourIndex=Math.max(0,Math.min(tourSteps.length-1,index));tourCount.textContent=`Step ${tourIndex+1} of ${tourSteps.length}`;tourTitle.textContent=tourSteps[tourIndex][0];tourBody.textContent=tourSteps[tourIndex][1];tourBack.disabled=tourIndex===0;tourNext.textContent=tourIndex===tourSteps.length-1?'Finish':'Next';tourBackdrop.hidden=false}
+startTour.onclick=()=>showTourStep(0);
+skipTour.onclick=()=>endTour();
+closeTour.onclick=()=>endTour();
+tourBackdrop.onclick=e=>{if(e.target===tourBackdrop)endTour()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!tourBackdrop.hidden)endTour()});
+tourBack.onclick=()=>showTourStep(tourIndex-1);tourNext.onclick=()=>{if(tourIndex===tourSteps.length-1)endTour(true);else showTourStep(tourIndex+1)};
+
+let currentFieldStep=0;
+fieldMode.onclick=()=>{
+ document.body.classList.toggle('field-mode');fieldMode.textContent=document.body.classList.contains('field-mode')?'Exit field mode':'Field mode';showFieldStep(0);toast(document.body.classList.contains('field-mode')?'Guided field mode on':'Full workspace mode on');
+};
+const stepGroups=[
+ ['companyName','revisionNo','boardType'],['boardOverviewInput','fileInput'],['selectCrop'],['captureName'],['site','sections'],['validateProject']
+];
+addPanelHelpers();
+function showFieldStep(index){
+ currentFieldStep=Math.max(0,Math.min(stepGroups.length-1,index));index=currentFieldStep;
+ const panels=[...document.querySelectorAll('main>.panel')];panels.forEach(p=>p.classList.remove('mobile-active'));
+ const ids=stepGroups[index]||[];ids.forEach(id=>{const el=document.getElementById(id);const panel=el?.closest('.panel');if(panel)panel.classList.add('mobile-active')});
+ if(index>=4)document.querySelector('#sections')?.closest('.panel')?.classList.add('mobile-active');
+ if(index===5)validateCurrentProject(true);
+ mobileSteps.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active',i===index));window.scrollTo({top:0,behavior:'smooth'});
+}
+mobileSteps.querySelectorAll('button').forEach(b=>b.onclick=()=>showFieldStep(+b.dataset.step));
+mobileBack.onclick=()=>showFieldStep(currentFieldStep-1);mobileNext.onclick=()=>showFieldStep(currentFieldStep+1);mobileSave.onclick=()=>{scheduleAutosave();toast('Draft saved on this device')};
+
+document.addEventListener('focusin',e=>{if(e.target.matches('input,select,textarea'))focusSnapshot=structuredClone(projectData())});
+document.addEventListener('change',e=>{if(e.target.matches('input,select,textarea')){if(focusSnapshot)pushUndo(focusSnapshot);focusSnapshot=null;scheduleAutosave()}});
+document.addEventListener('input',e=>{if(e.target.matches('input,textarea,select'))scheduleAutosave()});
+document.addEventListener('click',e=>{if(e.target.closest('.add-device,.delete-section,.remove,.merge,.up,.down,#addSection,#build,#deleteCapture,#addCapture,#updateCapture,#applyBoardType')){pushUndo();setTimeout(scheduleAutosave,0)}},true);
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoBtn.click():undoBtn.click()}});
+window.addEventListener('beforeunload',e=>{if(saveStatus.classList.contains('saving')){e.preventDefault();e.returnValue=''}});
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;installApp.hidden=false});
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+if(isIOS&&!navigator.standalone){installApp.hidden=false;installApp.textContent='Add to Home Screen'}
+installApp.onclick=async()=>{if(isIOS&&!deferredInstallPrompt)return alert('In Safari, tap the Share button, then choose “Add to Home Screen”.');if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installApp.hidden=true};
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 
 function autoColumns(deviceCount,paperSize,orient,density){
@@ -646,11 +1044,16 @@ function buildPrintReport(p,orient){
 }
 printPdf.onclick=()=>{
  const p=projectData(),firstDirection=p.sections[0]?.direction||'horizontal',auto=(p.boardType==='vertical'||(p.boardType==='custom'&&firstDirection==='vertical'))?'portrait':'landscape',orient=p.orientation==='auto'?auto:p.orientation;
+ const issues=validateCurrentProject(false),errors=issues.filter(x=>x.level==='error').length;
+ if(errors&&!confirm(`${errors} required item${errors===1?' is':'s are'} still incomplete. Print a draft anyway?`)){validateCurrentProject(true);return}
+ const deviceCount=p.sections.reduce((n,s)=>n+s.devices.length,0),forced=parseInt(p.output.devicesPerRow,10),perPage=Number.isFinite(forced)?forced:(p.paper==='A3'?14:10),estimatedPages=Math.max(1,Math.ceil(deviceCount/perPage));
+ if(!confirm(`Print preview is expected to use about ${estimatedPages} page${estimatedPages===1?'':'s'}. Continue?`))return;
  let style=document.getElementById('dynamicPrintStyle');if(style)style.remove();style=document.createElement('style');style.id='dynamicPrintStyle';
  style.textContent=`@media print{@page{size:${p.paper} ${orient};margin:5mm}}`;document.head.appendChild(style);
  printCompany.textContent=p.branding.companyName||'N&P Contracting';printSubtitle.textContent=p.branding.reportSubtitle||'';
  printSite.textContent=p.meta.site;printBoard.textContent=p.meta.board;printLocation.textContent=p.meta.location;printDate.textContent=p.meta.date;
  printPreparedBy.textContent=p.branding.preparedBy;printLicence.textContent=p.branding.licenceNo;printRef.textContent=p.branding.documentRef;
+ printRevision.textContent=p.control.revisionNo||'';
  printLogo.src=p.logoData||'';
  const headerEl=document.getElementById('printHeader');
  printLogo.parentElement.style.display=p.logoData?'flex':'none';
@@ -664,14 +1067,30 @@ printPdf.onclick=()=>{
  printBoardPhotoCard.style.display=p.boardOverviewData?'grid':'none';printLocationPhotoCard.style.display=p.locationPhotoData?'grid':'none';
  printCoverPhotos.style.display=(p.output.includePhotos&&(p.boardOverviewData||p.locationPhotoData))?'flex':'none';
  buildPrintReport(p,orient);
+ printNotes.hidden=!p.control.reportNotes;printNotes.textContent=p.control.reportNotes?`Notes / limitations: ${p.control.reportNotes}`:'';
+ const recordUrl=(p.control.digitalRecordUrl||'').trim(),showRecord=p.control.includeRecordLink&&/^https?:\/\//i.test(recordUrl);
+ printRecordLink.hidden=!showRecord;printRecordText.textContent=showRecord?recordUrl:'';
+ printQr.replaceChildren();
+ if(showRecord){
+  if(window.QRCode)new QRCode(printQr,{text:recordUrl,width:120,height:120,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  else printQr.textContent='QR unavailable';
+ }
+ printSignoff.hidden=!p.control.includeSignoff;
+ if(p.control.includeSignoff)printSignoff.innerHTML=`<div><b>${esc(p.branding.preparedBy||'Prepared by')}</b><div class="sign-line">Prepared by / signature</div></div><div><b>${esc(p.control.approvedBy||'Approved by')}${p.control.approvalRole?` — ${esc(p.control.approvalRole)}`:''}</b><div class="sign-line">Approved by / signature</div></div>`;
+ printRevisionStrip.textContent=[p.control.revisionNo&&`Revision ${p.control.revisionNo}`,p.control.revisionDate,p.control.revisionDescription].filter(Boolean).join(' • ');
  requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
 };
 
 date.value=new Date().toLocaleDateString('en-AU');
+revisionDate.value=date.value;
 logoPreview.src=logoData;
 printLogo.src=logoData;
 applyTheme();
 renderCaptureList();
+updateUndoButtons();
+if(localStorage.getItem(DRAFT_KEY))setSaveStatus('Recoverable draft found');
+updateProgress();
+if(!localStorage.getItem('switchboard-v51-tour'))setTimeout(()=>showTourStep(0),500);
 </script>
 </body>
 </html>

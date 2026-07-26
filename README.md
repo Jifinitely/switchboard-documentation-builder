@@ -1,9 +1,9 @@
-# Switchboard Documentation Builder v4.5
+# Switchboard Documentation Builder v5.1
 
 Create clear, professional electrical switchboard circuit schedules from site photographs—directly in your browser.
 
 [![Open the live builder](https://img.shields.io/badge/Open_live_builder-111111?style=for-the-badge&logo=github)](https://jifinitely.github.io/switchboard-documentation-builder/)
-[![Version](https://img.shields.io/badge/version-4.5-ffd400?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/version-5.1-ffd400?style=for-the-badge)](#)
 [![Runs in browser](https://img.shields.io/badge/runs_in-browser-2457d6?style=for-the-badge)](#)
 
 ![Switchboard Documentation Builder circuit schedule editor](docs/images/04-circuit-schedule-editor.jpg)
@@ -29,6 +29,22 @@ The app is a self-contained HTML tool. There is no installation, account or serv
 - Produce A4 or A3, portrait or landscape reports
 - Adjust report density, devices per row, header size and included fields
 - Print directly or save a polished report as PDF
+- Use a phone-friendly guided field mode with larger touch controls
+- Recover automatically saved work after refreshes or interruptions
+- Undo and redo edits with keyboard shortcuts
+- Optimise large field photos and flag images that may be blurry
+- Validate missing information and duplicate circuit identifiers before issue
+- Apply bulk numbering, reusable device presets and company report templates
+- Reopen recent device-local project snapshots
+- Add revision details, report notes, digital-record QR links and sign-off areas
+- Install the builder on a phone or computer and continue working offline
+- Follow a first-run guided tour or open a ready-made example project
+- See live completion progress and clear next-step actions
+- Use contextual help, collapsible stages and mobile bottom navigation
+- Confirm destructive actions and receive friendly toast notifications
+- Search and jump directly to a circuit on larger boards
+- Complete an issue checklist before generating the final report
+- Use stronger keyboard focus, patterned circuit colours and reduced-motion support
 
 ## Typical workflow
 
