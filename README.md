@@ -2,7 +2,7 @@
 
 Create clear, professional electrical switchboard circuit schedules from site photographs—directly in your browser.
 
-[![Open Switchboard Builder v5.1](https://img.shields.io/badge/Open_Switchboard_Builder-v5.1-111111?style=for-the-badge)](https://switchboard-documentation-builder-v45.jiffa14.chatgpt.site/)
+[![Open Switchboard Builder v5.1](https://img.shields.io/badge/Open_Switchboard_Builder-v5.1-111111?style=for-the-badge)](https://jifinitely.github.io/switchboard-documentation-builder/))
 [![Version](https://img.shields.io/badge/version-5.1-ffd400?style=for-the-badge)](#)
 [![Runs in browser](https://img.shields.io/badge/runs_in-browser-2457d6?style=for-the-badge)](#)
 
