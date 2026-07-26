@@ -2,7 +2,7 @@
 
 Create clear, professional electrical switchboard circuit schedules from site photographs—directly in your browser.
 
-[![Open the live builder](https://img.shields.io/badge/Open_live_builder-111111?style=for-the-badge&logo=github)](https://jifinitely.github.io/switchboard-documentation-builder/)
+[![Open Switchboard Builder v5.1](https://img.shields.io/badge/Open_Switchboard_Builder-v5.1-111111?style=for-the-badge)](https://switchboard-documentation-builder-v45.jiffa14.chatgpt.site/)
 [![Version](https://img.shields.io/badge/version-5.1-ffd400?style=for-the-badge)](#)
 [![Runs in browser](https://img.shields.io/badge/runs_in-browser-2457d6?style=for-the-badge)](#)
 
@@ -48,7 +48,7 @@ The app is a self-contained HTML tool. There is no installation, account or serv
 
 ## Typical workflow
 
-1. Open the [live builder](https://jifinitely.github.io/switchboard-documentation-builder/).
+1. Open [Switchboard Documentation Builder v5.1](https://switchboard-documentation-builder-v45.jiffa14.chatgpt.site/).
 2. Enter the report branding, board details and preferred PDF settings.
 3. Add the switchboard and location photographs.
 4. Upload the breaker/device photograph, rotate it if needed, and crop the active device area.
